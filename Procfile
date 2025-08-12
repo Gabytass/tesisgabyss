@@ -1,1 +1,2 @@
-web: gunicorn app:app
+web: gunicorn flask_catalogo.app:app
+
