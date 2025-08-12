@@ -1,0 +1,69 @@
+# Archivos de Python compilados
+__pycache__/
+*.pyc
+*.pyo
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Configuración local o archivos sensibles
+instance/
+*.env
+.env.*
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Carpetas de archivos subidos o modelos que no quieres versionar (ajusta si quieres subir modelos)
+uploads/
+media/
+
+# Ignorar modelos RA solo si no quieres versionar los archivos 3D
+# Si quieres versionar, comenta esta línea
+static/modelos_ra/
+
+# Archivos de credenciales Firebase (importante NO subir)
+*.json
+#firebase_config.py
+
+# Logs
+*.log
+
+# Configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos de base de datos SQLite
+*.db
+*.sqlite3
+
+# Cachés y temporales
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Archivos de compilación
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Linux específicos
+*~
+
+# Testing
+.coverage
+.tox/
+nosetests.xml
+test_*.xml
+htmlcov/
+
+# Herramientas específicas
+.mypy_cache/
+.pytest_cache/
