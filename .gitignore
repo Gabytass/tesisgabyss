@@ -1,0 +1,22 @@
+# Entorno virtual
+venv/
+ENV/
+
+# Archivos de compilación Python
+__pycache__/
+*.pyc
+
+# Archivos de sistema
+.DS_Store
+
+# Credenciales privadas Firebase
+*firebase-adminsdk-*.json
+
+# Archivos de configuración o secretos
+*.env
+*.key
+*.secret
+
+# Archivos de prueba opcionales (comenta si quieres subirlos)
+productos.json
+usuarios.json

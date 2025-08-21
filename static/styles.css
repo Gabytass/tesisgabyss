@@ -1,0 +1,29 @@
+body {
+  background: linear-gradient(to bottom right, lab(85.75% -82.17 71.03), lab(85.75% -82.17 71.03));
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(226, 17, 17, 0.15);
+}
+
+.btn-primary {
+  background-color: #83f512;
+  border-color: #011d01;
+}
+
+.btn-primary:hover {
+  background-color: #4bcf5d;
+  border-color: #e80ea3;
+}
+
+.btn-outline-dark:hover {
+  background-color: #2d3436;
+  color: rgb(13, 13, 13);
+}
+
