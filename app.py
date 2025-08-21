@@ -4,16 +4,16 @@ from flask import Flask, request, redirect, url_for, render_template, abort, ses
 from werkzeug.utils import secure_filename
 from functools import wraps
 
-# Firebase
-from firebase_config import db  # Conexión Firestore ya configurada
+# ----------------- FIREBASE -----------------
+from firebase_config import db  # Asegúrate que db esté correctamente configurado
 
-# Configuración
+# ----------------- CONFIGURACIÓN -----------------
 UPLOAD_FOLDER = 'static/modelos_ra'
 ALLOWED_EXTENSIONS = {'glb', 'gltf', 'fbx', 'obj'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = 'GabyssR'  # Cambiar en producción por clave segura
+app.secret_key = 'GabyssR'  # Cambiar por clave segura en producción
 
 # ----------------- FUNCIONES -----------------
 def allowed_file(filename):
@@ -51,11 +51,10 @@ def guardar_producto_firestore(producto, producto_id=None):
 def eliminar_producto_firestore(producto_id):
     db.collection('productos').document(producto_id).delete()
 
-# Decorador para admin
 def es_admin():
     return session.get('usuario') == 'admin'
 
-# ----------------- RUTAS -----------------
+# ----------------- RUTAS PÚBLICAS -----------------
 @app.route('/')
 def index():
     productos = obtener_productos()
@@ -63,12 +62,14 @@ def index():
 
 @app.route('/ver_modelo/<nombre_archivo>')
 def ver_modelo(nombre_archivo):
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
     ruta = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
     if not os.path.exists(ruta):
         abort(404)
     return render_template('visor_modelo.html', nombre_archivo=nombre_archivo)
 
-# Carrito
+# ----------------- CARRITO -----------------
 @app.route('/agregar_al_carrito/<producto_id>')
 def agregar_al_carrito(producto_id):
     if 'usuario' not in session:
@@ -105,32 +106,41 @@ def vaciar_carrito():
     flash('Carrito vaciado.', 'success')
     return redirect(url_for('mostrar_carrito'))
 
-# Login / Logout
-USUARIOS = {
-    'admin': 'disfaluvid123',
-}
-
+# ----------------- LOGIN / LOGOUT -----------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        usuario = request.form.get('usuario')
+        correo = request.form.get('correo')
         clave = request.form.get('clave')
-        if usuario in USUARIOS and USUARIOS[usuario] == clave:
-            session['usuario'] = usuario
-            flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for('admin') if usuario == 'admin' else url_for('index'))
-        else:
-            flash('Credenciales incorrectas', 'danger')
+
+        if not correo or not clave:
+            flash('Todos los campos son obligatorios.', 'danger')
+            return redirect(url_for('login'))
+
+        # Verificar usuario en Firebase
+        doc_ref = db.collection('usuarios').document(correo)
+        usuario_doc = doc_ref.get()
+        if usuario_doc.exists:
+            usuario_data = usuario_doc.to_dict()
+            if usuario_data.get('clave') == clave:
+                session['usuario'] = usuario_data.get('nombre')
+                session['rol'] = usuario_data.get('rol', 'user')
+                flash('Inicio de sesión exitoso', 'success')
+                return redirect(url_for('admin') if usuario_data.get('rol') == 'admin' else url_for('index'))
+
+        flash('Credenciales incorrectas.', 'danger')
+
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
     session.pop('usuario', None)
+    session.pop('rol', None)
     session.pop('carrito', None)
     flash('Sesión cerrada', 'info')
     return redirect(url_for('index'))
 
-# Admin
+# ----------------- ADMIN -----------------
 @app.route('/admin')
 def admin():
     if not es_admin():
@@ -144,6 +154,7 @@ def nuevo_producto():
     if not es_admin():
         flash('Acceso denegado. Solo administrador.', 'danger')
         return redirect(url_for('login'))
+
     if request.method == 'POST':
         nombre = request.form.get('nombre')
         precio = request.form.get('precio')
@@ -162,7 +173,8 @@ def nuevo_producto():
         nombre_archivo_ra = ''
         if archivo_ra and allowed_file(archivo_ra.filename):
             nombre_archivo_ra = secure_filename(archivo_ra.filename)
-            archivo_ra.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra))
+            ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra)
+            archivo_ra.save(ruta_archivo)
 
         nuevo_producto = {
             'nombre': nombre,
@@ -171,6 +183,7 @@ def nuevo_producto():
             'descripcion': descripcion,
             'archivo_ra': nombre_archivo_ra
         }
+
         guardar_producto_firestore(nuevo_producto)
         flash('Producto creado correctamente.', 'success')
         return redirect(url_for('admin'))
@@ -209,7 +222,8 @@ def editar_producto(producto_id):
 
         if archivo_ra and allowed_file(archivo_ra.filename):
             nombre_archivo_ra = secure_filename(archivo_ra.filename)
-            archivo_ra.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra))
+            ruta_archivo = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra)
+            archivo_ra.save(ruta_archivo)
             producto['archivo_ra'] = nombre_archivo_ra
 
         guardar_producto_firestore(producto, producto_id)
@@ -230,4 +244,4 @@ def eliminar_producto(producto_id):
 # ----------------- INICIO APP -----------------
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True)  # Cambia a False en producción
+    app.run(debug=True)  # Cambiar a False en producción
