@@ -357,12 +357,13 @@ def vaciar_carrito():
     flash('Carrito vaciado correctamente.', 'info')
     return redirect(url_for('mostrar_carrito'))
 
+## ... (todo tu código anterior permanece igual)
+
 # ----------------- INICIO APP -----------------
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
-
+    app.run(host='0.0.0.0', port=port, debug=False)  # ✅ Corregido
 
 
 
