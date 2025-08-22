@@ -1,21 +1,19 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 import os
+import json
 
-# Obtener ruta absoluta al archivo de credenciales JSON
-cred_path = os.path.join(os.path.dirname(__file__), "rojasgabriela-bffec-firebase-adminsdk-fbsvc-ef70b41578.json")
+# Obtener credenciales desde la variable de entorno
+cred_json = os.environ.get("FIREBASE_CREDENTIALS")
+if not cred_json:
+    raise ValueError("No se encontró la variable de entorno FIREBASE_CREDENTIALS")
 
-# Verificar que el archivo exista
-if not os.path.exists(cred_path):
-    raise FileNotFoundError(f"No se encontró el archivo de credenciales en {cred_path}")
+cred_dict = json.loads(cred_json)
+cred = credentials.Certificate(cred_dict)
 
-# Cargar credenciales
-cred = credentials.Certificate(cred_path)
-
-# Inicializar Firebase si no está inicializado (previene errores al recargar)
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
-# Cliente de Firestore
 db = firestore.client()
+
 

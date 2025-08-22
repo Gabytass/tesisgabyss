@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,6 +16,7 @@
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
+
 <body class="bg-light">
 
   <!-- HEADER -->
@@ -25,7 +27,7 @@
         Disfaluvid
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -57,44 +59,41 @@
 
     <!-- Mensajes flash -->
     {% with mensajes = get_flashed_messages(with_categories=true) %}
-      {% if mensajes %}
-        {% for categoria, mensaje in mensajes %}
-          <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
-            {{ mensaje }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
+    {% if mensajes %}
+    {% for categoria, mensaje in mensajes %}
+    <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+      {{ mensaje }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <!-- CAROUSEL DE BANNERS -->
     <div id="bannerCarousel" class="carousel slide carousel-fade mb-5" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">
-          <img src="{{ url_for('static', filename='banner1.jpg') }}" 
-              class="d-block w-100 rounded shadow-sm" 
-              alt="Banner 1" style="max-height: 250px; object-fit: cover;">
+          <img src="{{ url_for('static', filename='banner1.jpg') }}" class="d-block w-100 rounded shadow-sm"
+            alt="Banner 1" style="max-height: 250px; object-fit: cover;">
           <div class="carousel-caption d-none d-md-block text-white text-shadow">
-            <h2 class="fw-bold" style="color: lab(85.75% -82.17 71.03);">Nuestro límite es su imaginación</h2>
-            <h4 class="fw-bold"  style="color: lab(85.75% -82.17 71.03);">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
+            <h2 class="fw-bold">Nuestro límite es su imaginación</h2>
+            <h4 class="fw-bold">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="{{ url_for('static', filename='banner2.jpg') }}" 
-              class="d-block w-100 rounded shadow-sm" 
-              alt="Banner 2" style="max-height: 250px; object-fit: cover;">
+          <img src="{{ url_for('static', filename='banner2.jpg') }}" class="d-block w-100 rounded shadow-sm"
+            alt="Banner 2" style="max-height: 250px; object-fit: cover;">
           <div class="carousel-caption d-none d-md-block text-white text-shadow">
-            <h2 class="fw-bold"  style="color: lab(85.75% -82.17 71.03)">Nuestro límite es su imaginación</h2>
-            <h4 class="fw-bold"  style="color: lab(85.75% -82.17 71.03);">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
+            <h2 class="fw-bold">Nuestro límite es su imaginación</h2>
+            <h4 class="fw-bold">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
           </div>
         </div>
         <div class="carousel-item">
-          <img src="{{ url_for('static', filename='banner1.jpg') }}" 
-        class="d-block w-100 rounded shadow-sm" 
-        alt="Banner 1" style="max-height: 250px; object-fit: contain; background-color: #f8f9fa;">
+          <img src="{{ url_for('static', filename='banner1.jpg') }}" class="d-block w-100 rounded shadow-sm"
+            alt="Banner 1" style="max-height: 250px; object-fit: contain; background-color: #f8f9fa;">
           <div class="carousel-caption d-none d-md-block text-white text-shadow">
-            <h2 class="fw-bold"  style="color: lab(85.75% -82.17 71.03);">Transformamos ideas en realidad</h2>
-            <h4 class="fw-bold"  style="color: lab(85.75% -82.17 71.03);">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
+            <h2 class="fw-bold">Transformamos ideas en realidad</h2>
+            <h4 class="fw-bold">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
           </div>
         </div>
       </div>
@@ -118,31 +117,31 @@
       {% for producto in productos %}
       <div class="col-md-4 d-flex align-items-stretch">
         <div class="card mb-3 shadow-sm" style="border-radius: 12px; width: 100%;">
-          <img src="{{ producto.imagen }}" class="card-img-top" alt="{{ producto.nombre }}"
-              style="border-top-left-radius: 12px; border-top-right-radius: 12px; height: 250px; object-fit: contain; background-color: #f8f9fa;">
+
+          <!-- Imagen del producto -->
+          {% set img_url = producto['imagen'] if producto['imagen'] and producto['imagen'].startswith('http') else url_for('static', filename=producto['imagen'] if producto['imagen'] else 'logo_empresa.png') %}
+          <img src="{{ img_url }}"
+               class="card-img-top"
+               alt="{{ producto.get('nombre','Producto') }}"
+               style="border-top-left-radius: 12px; border-top-right-radius: 12px; height: 250px; object-fit: contain; background-color: #f8f9fa;">
+
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-dark fw-semibold" style="font-size: 1.1rem; margin-bottom: 0.25rem;">
-              {{ producto.nombre }}
-            </h5>
-            <p class="card-text text-muted mb-2" style="font-size: 0.9rem;">
-              {{ producto.descripcion }}
-            </p>
-            <p class="card-text text-success fw-bold fs-6 mb-3">
-              ${{ '%.2f'|format(producto.precio) }}
-            </p>
+            <h5>{{ producto.get('nombre','Sin nombre') }}</h5>
+            <p>{{ producto.get('descripcion','Sin descripción') }}</p>
+            <p>${{ '%.2f' | format(producto.get('precio',0)) }}</p>
+
             <!-- Botón verde para agregar al carrito -->
-            <a href="{{ url_for('agregar_al_carrito', indice=loop.index0) }}" 
-               class="btn mt-auto" 
-               style="background-color: black; color: white; border-radius: 6px;">
-               Agregar al carrito
+            <a href="{{ url_for('agregar_al_carrito', indice=loop.index0) }}" class="btn mt-auto text-white"
+              style="background-color: green; border-radius: 6px;">
+              Agregar al carrito
             </a>
-            {% if producto.archivo_ra %}
-              <!-- Botón negro para ver en 3D -->
-              <a href="{{ url_for('ver_modelo', nombre_archivo=producto.archivo_ra) }}"
-                 class="btn mt-2"
-                 style="background-color: black; color: white; border-radius: 6px;">
-                 Ver en 3D
-              </a>
+
+            {% if producto.get('archivo_ra') %}
+            <!-- Botón negro para ver en 3D -->
+            <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn mt-2 text-white"
+              style="background-color: black; border-radius: 6px;">
+              Ver en 3D
+            </a>
             {% endif %}
           </div>
         </div>
@@ -153,7 +152,7 @@
     <!-- Botón de administración -->
     {% if session.get('rol') == 'admin' %}
     <div class="text-center mb-4">
-      <a href="/admin" class="btn btn-outline-dark px-4 py-2">Ir al Panel de Administración</a>
+      <a href="{{ url_for('admin') }}" class="btn btn-outline-dark px-4 py-2">Ir al Panel de Administración</a>
     </div>
     {% endif %}
 
@@ -175,4 +174,6 @@
   <!-- Scripts Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
+
