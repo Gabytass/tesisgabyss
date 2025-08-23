@@ -329,6 +329,22 @@ def vaciar_carrito():
     session.modified = True
     flash('Carrito vaciado.', 'info')
     return redirect(url_for('mostrar_carrito'))
+@app.route('/finalizar_compra')
+def finalizar_compra():
+    if not session.get('usuario'):
+        flash('Inicia sesión para finalizar la compra.', 'warning')
+        return redirect(url_for('login'))
+
+    carrito = session.get('carrito', [])
+    if not carrito:
+        flash('El carrito está vacío.', 'info')
+        return redirect(url_for('index'))
+
+    # Aquí podrías enviar los datos a Firebase, email o generar PDF
+    session['carrito'] = []  # Vaciar carrito al finalizar
+    flash('Compra finalizada correctamente. Gracias por tu compra!', 'success')
+    return redirect(url_for('index'))
+
 
 # -------- Admin --------
 @app.route('/admin')
