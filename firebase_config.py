@@ -1,21 +1,20 @@
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, storage
 import os
-import json
 
-# Leer credenciales desde la variable de entorno
-cred_json = os.environ.get("FIREBASE_CREDENTIALS")
-if not cred_json:
-    raise ValueError("No se encontró la variable de entorno FIREBASE_CREDENTIALS")
+db = None
+bucket = None
 
-cred_dict = json.loads(cred_json)
-cred = credentials.Certificate(cred_dict)
-
-# Inicializar Firebase si no está inicializado
-if not firebase_admin._apps:
-    firebase_admin.initialize_app(cred)
-
-# Cliente de Firestore
-db = firestore.client()
-
+try:
+    if os.path.exists("rojasgabriela-bffec-firebase-adminsdk-fbsvc-0456a7442f.json"):
+        cred = credentials.Certificate("rojasgabriela-bffec-firebase-adminsdk-fbsvc-0456a7442f.json")
+        firebase_admin.initialize_app(cred, {
+            "storageBucket": "TU-PROYECTO.appspot.com"
+        })
+        db = firestore.client()
+        bucket = storage.bucket()
+    else:
+        print("⚠️ Advertencia: No se encontró rojasgabriela-bffec-firebase-adminsdk-fbsvc-0456a7442f.json. Modo offline activado.")
+except Exception as e:
+    print(f"❌ Error inicializando Firebase: {e}")
 

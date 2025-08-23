@@ -9,13 +9,26 @@
   <div class="container mt-5">
     <h2 class="text-center mb-4">🛒 Carrito de Compras</h2>
 
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+      {% if mensajes %}
+        {% for categoria, mensaje in mensajes %}
+          <div class="alert alert-{{ categoria }} alert-dismissible fade show" role="alert">
+            {{ mensaje }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     {% if carrito %}
-      <table class="table table-bordered table-striped">
+      <table class="table table-bordered table-striped align-middle">
         <thead class="table-dark">
           <tr>
             <th>#</th>
             <th>Producto</th>
-            <th>Precio</th>
+            <th class="text-end">Precio</th>
+            <th class="text-center">Cantidad</th>
+            <th class="text-end">Subtotal</th>
             <th>Imagen</th>
             <th>Acción</th>
           </tr>
@@ -25,10 +38,22 @@
           <tr>
             <td>{{ loop.index }}</td>
             <td>{{ item['nombre'] }}</td>
-            <td>${{ '%.2f' | format(item.get('precio', 0)) }}</td>
-            <td><img src="{{ item['imagen'] }}" alt="img" width="80" /></td>
+            <td class="text-end">${{ '%.2f' | format(item.get('precio', 0)) }}</td>
+            <td class="text-center">
+              <div class="d-inline-flex align-items-center gap-2">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('carrito_disminuir', id_producto=item['id']) }}">−</a>
+                <span class="fw-bold">{{ item.get('cantidad', 1) }}</span>
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('carrito_aumentar', id_producto=item['id']) }}">+</a>
+              </div>
+            </td>
+            <td class="text-end">
+              ${{ '%.2f' | format(item.get('precio',0) * item.get('cantidad',1)) }}
+            </td>
             <td>
-              <form action="{{ url_for('eliminar_del_carrito', indice=loop.index0) }}" method="POST">
+              <img src="{{ item['imagen'] }}" alt="img" width="80" />
+            </td>
+            <td>
+              <form action="{{ url_for('eliminar_del_carrito', id_producto=item['id']) }}" method="POST" onsubmit="return confirm('¿Eliminar este producto?')">
                 <button class="btn btn-sm btn-danger">Eliminar</button>
               </form>
             </td>
@@ -41,7 +66,7 @@
         <h4>Total: <span class="text-success">${{ '%.2f' | format(total) }}</span></h4>
       </div>
 
-      <form action="{{ url_for('vaciar_carrito') }}" method="POST" class="mb-3 text-end">
+      <form action="{{ url_for('vaciar_carrito') }}" method="POST" class="mb-3 text-end" onsubmit="return confirm('¿Vaciar carrito?')">
         <button class="btn btn-warning">Vaciar Carrito</button>
       </form>
 

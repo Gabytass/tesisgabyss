@@ -1,37 +1,34 @@
 [
   {
-    "nombre": "Vitrina Mixta",
-    "precio": 100.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
-    "archivo_ra": "vitrina3.glb",
-    "descripcion": "mama"
-  },
-  {
-    "nombre": "Vitrina",
-    "precio": 123.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.appspot.com/o/img%2Fborrador%206%20casi.glb?alt=media&token=5a4d43cb-e1d6-43ff-92a4-4fd9b4d56027",
-    "archivo_ra": "vitrina3.glb",
-    "descripcion": "hola"
-  },
-  {
-    "nombre": "casi",
-    "precio": 123.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.appspot.com/o/img%2Fborrador%206%20casi.glb?alt=media&token=5a4d43cb-e1d6-43ff-92a4-4fd9b4d56027",
+    "nombre": "Prueba 1",
     "archivo_ra": "borrador_6_casi.glb",
-    "descripcion": "wrewtwew"
+    "descripcion": "vidrio de 6mmclaro     \r\n 60cm de frente\r\n40cm de fondo\r\n180cm de altura\r\n",
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "precio": 123.0,
+    "id": "W8xY51gvAJB8ut3Qtane"
+  },
+  {
+    "nombre": "Vitrina con Mixta",
+    "id": "mdcxdtPoNhkt2Iuh9mc9",
+    "descripcion": " Vidrio de 6mm claro      \r\n60cm de frente\r\n 40cm de fondo \r\n180cm de altura ",
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "precio": 100.0,
+    "archivo_ra": "vitrina3.glb"
   },
   {
     "nombre": "Caramelera",
-    "precio": 345.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.appspot.com/o/img%2Fborrador%206%20casi.glb?alt=media&token=5a4d43cb-e1d6-43ff-92a4-4fd9b4d56027",
-    "archivo_ra": "vitrina3.glb",
-    "descripcion": "wrewtwew"
+    "id": "uuAtAz10hVr6enLtwgtH",
+    "descripcion": " vidrio de 6mmclaro \n60cm de frente\n 40cm de fondo\n 180cm de altura ",
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "precio": 17.0,
+    "archivo_ra": "vitrina3.glb"
   },
   {
-    "nombre": "Gabyss",
-    "precio": 234.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.appspot.com/o/img%2Fborrador%206%20casi.glb?alt=media&token=5a4d43cb-e1d6-43ff-92a4-4fd9b4d56027",
-    "archivo_ra": "vitrina3.glb",
-    "descripcion": "wrewtwew"
+    "id": "e56adf40-f2b8-4bb5-9704-09ea9cc4892b",
+    "nombre": "Vitrina Mixta",
+    "descripcion": "jhvjhvvv",
+    "precio": 12.0,
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "archivo_ra": "vitrina3_1.glb"
   }
 ]

@@ -32,9 +32,6 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('mostrar_carrito') }}">🛒 Carrito</a>
-          </li>
           {% if session.get('usuario') %}
           <li class="nav-item">
             <span class="nav-link text-light">Hola, {{ session['usuario'] }}</span>
@@ -50,6 +47,12 @@
             <a class="nav-link" href="{{ url_for('registro_usuario') }}">Registrarse</a>
           </li>
           {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('mostrar_carrito') }}">
+              <i class="bi bi-cart"></i> Carrito
+              {% if carrito_cant %}({{ carrito_cant }}){% endif %}
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -75,26 +78,10 @@
         <div class="carousel-item active">
           <img src="{{ url_for('static', filename='banner1.jpg') }}" class="d-block w-100 rounded shadow-sm"
             alt="Banner 1" style="max-height: 250px; object-fit: cover;">
-          <div class="carousel-caption d-none d-md-block text-white text-shadow">
-            <h2 class="fw-bold">Nuestro límite es su imaginación</h2>
-            <h4 class="fw-bold">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
-          </div>
         </div>
         <div class="carousel-item">
           <img src="{{ url_for('static', filename='banner2.jpg') }}" class="d-block w-100 rounded shadow-sm"
             alt="Banner 2" style="max-height: 250px; object-fit: cover;">
-          <div class="carousel-caption d-none d-md-block text-white text-shadow">
-            <h2 class="fw-bold">Nuestro límite es su imaginación</h2>
-            <h4 class="fw-bold">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="{{ url_for('static', filename='banner1.jpg') }}" class="d-block w-100 rounded shadow-sm"
-            alt="Banner 1" style="max-height: 250px; object-fit: contain; background-color: #f8f9fa;">
-          <div class="carousel-caption d-none d-md-block text-white text-shadow">
-            <h2 class="fw-bold">Transformamos ideas en realidad</h2>
-            <h4 class="fw-bold">Disfaluvid: Diseño y fabricación en aluminio y vidrio</h4>
-          </div>
         </div>
       </div>
       <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
@@ -107,52 +94,61 @@
       </button>
     </div>
 
-    <!-- Título catálogo -->
+    <!-- Catálogo -->
     <h1 class="text-center mb-4" style="color: #0a0b0a; font-weight: 600; font-size: 1.8rem;">
       Catálogo de Productos Disfaluvid
     </h1>
 
-    <!-- Lista de productos -->
     <div class="row">
-      {% for producto in productos %}
-      <div class="col-md-4 d-flex align-items-stretch">
-        <div class="card mb-3 shadow-sm" style="border-radius: 12px; width: 100%;">
+      {% if productos %}
+        {% for producto in productos %}
+        <div class="col-md-4 d-flex align-items-stretch">
+          <div class="card mb-3 shadow-sm" style="border-radius: 12px; width: 100%;">
+            {% set img_url = producto['imagen'] if producto['imagen'] and producto['imagen'].startswith('http') else url_for('static', filename=producto['imagen'] if producto['imagen'] else 'logo_empresa.png') %}
+            <img src="{{ img_url }}" class="card-img-top" alt="{{ producto.get('nombre','Producto') }}"
+              style="border-top-left-radius: 12px; border-top-right-radius: 12px; height: 250px; object-fit: contain; background-color: #f8f9fa;">
 
-          <!-- Imagen del producto -->
-          {% set img_url = producto['imagen'] if producto['imagen'] and producto['imagen'].startswith('http') else url_for('static', filename=producto['imagen'] if producto['imagen'] else 'logo_empresa.png') %}
-          <img src="{{ img_url }}"
-               class="card-img-top"
-               alt="{{ producto.get('nombre','Producto') }}"
-               style="border-top-left-radius: 12px; border-top-right-radius: 12px; height: 250px; object-fit: contain; background-color: #f8f9fa;">
+            <div class="card-body d-flex flex-column">
+              <h5>{{ producto.get('nombre','Sin nombre') }}</h5>
+              <p>{{ producto.get('descripcion','Sin descripción') }}</p>
+              <p>${{ '%.2f'|format(producto.get('precio',0)) }}</p>
 
-          <div class="card-body d-flex flex-column">
-            <h5>{{ producto.get('nombre','Sin nombre') }}</h5>
-            <p>{{ producto.get('descripcion','Sin descripción') }}</p>
-            <p>${{ '%.2f' | format(producto.get('precio',0)) }}</p>
+              <!-- Botón verde agregar al carrito-->
+              <a href="{{ url_for('agregar_al_carrito', id_producto=producto['id']) }}" class="btn mt-auto text-white"
+                style="background-color: green; border-radius: 6px;">Agregar al carrito</a>
 
-            <!-- Botón verde para agregar al carrito -->
-            <a href="{{ url_for('agregar_al_carrito', indice=loop.index0) }}" class="btn mt-auto text-white"
-              style="background-color: green; border-radius: 6px;">
-              Agregar al carrito
-            </a>
+              {% if producto.get('archivo_ra') %}
+              <!-- Botón negro ver 3D -->
+              <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn mt-2 text-white"
+                style="background-color: black; border-radius: 6px;">Ver en 3D</a>
+              {% endif %}
 
-            {% if producto.get('archivo_ra') %}
-            <!-- Botón negro para ver en 3D -->
-            <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn mt-2 text-white"
-              style="background-color: black; border-radius: 6px;">
-              Ver en 3D
-            </a>
-            {% endif %}
+              {% if session.get('rol')=='admin' %}
+              <!-- Botones Editar y Eliminar -->
+              <div class="mt-2 d-flex justify-content-between">
+                <a href="{{ url_for('editar_producto', indice=loop.index0) }}" class="btn btn-warning btn-sm">Editar</a>
+                <form action="{{ url_for('eliminar_producto', indice=loop.index0) }}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-danger btn-sm"
+                    onclick="return confirm('¿Deseas eliminar este producto?')">Eliminar</button>
+                </form>
+              </div>
+              {% endif %}
+            </div>
           </div>
         </div>
-      </div>
-      {% endfor %}
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <p class="text-center">No hay productos disponibles.</p>
+        </div>
+      {% endif %}
     </div>
 
-    <!-- Botón de administración -->
-    {% if session.get('rol') == 'admin' %}
+    <!-- Botón admin general -->
+    {% if session.get('rol')=='admin' %}
     <div class="text-center mb-4">
-      <a href="{{ url_for('admin') }}" class="btn btn-outline-dark px-4 py-2">Ir al Panel de Administración</a>
+      <a href="{{ url_for('admin') }}" class="btn btn-outline-dark px-4 py-2">Panel de Administración</a>
+      <a href="{{ url_for('nuevo_producto') }}" class="btn btn-outline-success px-4 py-2">Agregar Producto</a>
     </div>
     {% endif %}
 
@@ -171,9 +167,7 @@
     </p>
   </footer>
 
-  <!-- Scripts Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
 
