@@ -8,6 +8,14 @@
     "id": "W8xY51gvAJB8ut3Qtane"
   },
   {
+    "nombre": "Vitrina Mixta",
+    "id": "e56adf40-f2b8-4bb5-9704-09ea9cc4892b",
+    "archivo_ra": "vitrina3_1.glb",
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "precio": 12.0,
+    "descripcion": "Tavo y Gaby"
+  },
+  {
     "nombre": "Vitrina con Mixta",
     "id": "mdcxdtPoNhkt2Iuh9mc9",
     "descripcion": " Vidrio de 6mm claro      \r\n60cm de frente\r\n 40cm de fondo \r\n180cm de altura ",
@@ -18,17 +26,9 @@
   {
     "nombre": "Caramelera",
     "id": "uuAtAz10hVr6enLtwgtH",
-    "descripcion": " vidrio de 6mmclaro \n60cm de frente\n 40cm de fondo\n 180cm de altura ",
+    "descripcion": "vidrio de 6mmclaro \r\n60cm de frente\r\n 40cm de fondo\r\n 180cm de altura",
     "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
     "precio": 17.0,
     "archivo_ra": "vitrina3.glb"
-  },
-  {
-    "id": "e56adf40-f2b8-4bb5-9704-09ea9cc4892b",
-    "nombre": "Vitrina Mixta",
-    "descripcion": "jhvjhvvv",
-    "precio": 12.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
-    "archivo_ra": "vitrina3_1.glb"
   }
 ]

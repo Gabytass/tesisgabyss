@@ -27,9 +27,14 @@
         <input type="email" class="form-control" id="correo" name="correo" required>
       </div>
 
-      <div class="mb-3">
+      <div class="mb-3 position-relative">
         <label for="clave" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="clave" name="clave" required>
+        <div class="input-group">
+          <input type="password" class="form-control" id="clave" name="clave" required>
+          <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+            👁️
+          </button>
+        </div>
       </div>
 
       <div class="text-center">
@@ -39,8 +44,20 @@
 
     <div class="text-center mt-3">
       <p>¿No tienes cuenta? <a href="{{ url_for('registro_usuario') }}">Regístrate aquí</a></p>
+      <p><a href="{{ url_for('recuperar') }}">¿Olvidaste tu contraseña?</a></p> <!-- 🔹 Nuevo enlace -->
     </div>
   </div>
+
+  <script>
+    function togglePassword() {
+      const input = document.getElementById("clave");
+      if (input.type === "password") {
+        input.type = "text";
+      } else {
+        input.type = "password";
+      }
+    }
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

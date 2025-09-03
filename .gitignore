@@ -1,64 +1,38 @@
-<<<<<<< HEAD
-# Entorno virtual
+# Entornos virtuales
 venv/
 ENV/
+env/
+.venv/
 
-# Archivos de compilación Python
-__pycache__/
-*.pyc
-
-# Archivos de sistema
-.DS_Store
-
-# Credenciales privadas Firebase
-*firebase-adminsdk-*.json
-
-# Archivos de configuración o secretos
-*.env
-*.key
-*.secret
-
-# Archivos de prueba opcionales (comenta si quieres subirlos)
-productos.json
-usuarios.json
-=======
 # Archivos de Python compilados
 __pycache__/
 *.pyc
 *.pyo
 
-# Entornos virtuales
-venv/
-env/
-.venv/
-
-# Configuración local o archivos sensibles
-instance/
-*.env
-.env.*
-
 # Archivos de sistema
 .DS_Store
 Thumbs.db
+*~
 
-# Carpetas de archivos subidos o modelos que no quieres versionar (ajusta si quieres subir modelos)
+# Archivos de configuración o secretos
+.env
+config.py
+firebase_config.py
+*.key
+*.secret
+*firebase-adminsdk-*.json
+
+# Archivos locales de prueba (opcional)
+productos.json
+usuarios.json
+
+# Carpetas de archivos subidos o modelos RA (3D)
 uploads/
 media/
-
-# Ignorar modelos RA solo si no quieres versionar los archivos 3D
-# Si quieres versionar, comenta esta línea
 static/modelos_ra/
-
-# Archivos de credenciales Firebase (importante NO subir)
-*.json
-#firebase_config.py
 
 # Logs
 *.log
-
-# Configuración de IDEs
-.vscode/
-.idea/
 
 # Archivos de base de datos SQLite
 *.db
@@ -75,20 +49,19 @@ build/
 dist/
 *.egg-info/
 
+# Configuración de IDEs
+.vscode/
+.idea/
+
 # Jupyter
 .ipynb_checkpoints/
 
-# Linux específicos
-*~
-
-# Testing
+# Testing y cachés
 .coverage
 .tox/
 nosetests.xml
 test_*.xml
 htmlcov/
-
-# Herramientas específicas
 .mypy_cache/
 .pytest_cache/
->>>>>>> ebbb7897409d865a94a76559fb667705c74951de
+

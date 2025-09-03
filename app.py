@@ -1,9 +1,22 @@
 import os
 import json
 import uuid
+import smtplib
+from email.mime.text import MIMEText
 from functools import wraps
 from flask import Flask, render_template, redirect, url_for, request, session, flash, abort
+from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from dotenv import load_dotenv
+load_dotenv()  # Carga variables de .env
+
+
+
+# Verificamos si se están leyendo las variables de entorno
+print("📧 MAIL_USER:", os.getenv("MAIL_USER"))
+print("🔑 MAIL_PASS:", os.getenv("MAIL_PASS"))
+
 
 # -------- Firebase opcional --------
 db = None
@@ -25,6 +38,40 @@ app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-local')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# -------- Seguridad --------
+bcrypt = Bcrypt(app)
+serializer = URLSafeTimedSerializer(app.secret_key)
+
+# -------- Función de envío de correo (smtplib) --------
+# Usaremos SMTP SSL (puerto 465). Usa variables de entorno MAIL_USER y MAIL_PASS.
+MAIL_USER = os.environ.get('MAIL_USER')  # tu correo
+MAIL_PASS = os.environ.get('MAIL_PASS')  # app password de Google o contraseña SMTP
+
+def enviar_email(destino: str, asunto: str, html_mensaje: str) -> bool:
+    """
+    Envía correo usando SMTP SSL. Devuelve True si se envió correctamente.
+    """
+    remitente = MAIL_USER
+    if not remitente or not MAIL_PASS:
+        print("⚠️ Mail no configurado: configura MAIL_USER y MAIL_PASS como variables de entorno.")
+        return False
+
+    msg = MIMEText(html_mensaje, 'html', 'utf-8')
+    msg['Subject'] = asunto
+    msg['From'] = remitente
+    msg['To'] = destino
+
+    try:
+        # conectar con SMTP SSL (Gmail)
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(remitente, MAIL_PASS)
+            server.sendmail(remitente, [destino], msg.as_string())
+        print(f"✅ Correo enviado a {destino}")
+        return True
+    except Exception as e:
+        print(f"❌ Error enviando correo a {destino}: {e}")
+        return False
+
 # -------- Helpers --------
 def allowed_file(filename: str) -> bool:
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -40,6 +87,22 @@ def admin_required(f):
             return redirect(url_for('index'))
         return f(*args, **kwargs)
     return _wrap
+
+# ---- Utilidades de contraseñas ----
+def _looks_like_bcrypt(s: str) -> bool:
+    return isinstance(s, str) and s.startswith("$2")
+
+def verify_password(plain: str, stored: str) -> bool:
+    """Valida contra hash bcrypt si corresponde. Si es texto plano, compara directo (legacy)."""
+    if not stored:
+        return False
+    if _looks_like_bcrypt(stored):
+        try:
+            return bcrypt.check_password_hash(stored, plain)
+        except Exception:
+            return False
+    # compatibilidad con usuarios antiguos en texto plano
+    return stored == plain
 
 # -------- Archivos JSON locales --------
 PRODUCTOS_JSON = 'productos.json'
@@ -88,8 +151,7 @@ def _leer_local_productos():
     return []
 
 def cargar_productos():
-    """Mezcla productos de Firebase (si hay) + locales.
-       Si un ID existe en Firebase se prioriza, y se agregan los locales que no estén."""
+    """Mezcla productos de Firebase (si hay) + locales."""
     cloud = []
     try:
         if db:
@@ -102,13 +164,11 @@ def cargar_productos():
         print(f"⚠️  Error leyendo productos de Firebase: {e}")
 
     local = _leer_local_productos()
-
     merged = {p['id']: p for p in cloud}
     for p in local:
         if p['id'] not in merged:
             merged[p['id']] = p
 
-    # mantener orden estable: primero cloud, luego los locales que no estaban
     resultado = cloud + [p for pid, p in merged.items() if all(pid != c['id'] for c in cloud)]
     return resultado
 
@@ -178,20 +238,45 @@ def login():
 
         ok, rol, nombre = False, 'user', ''
         try:
+            # --- Firebase ---
             if db:
-                doc = db.collection('usuarios').document(correo).get()
+                doc_ref = db.collection('usuarios').document(correo)
+                doc = doc_ref.get()
                 if doc.exists:
                     u = _normalize_user(doc.to_dict())
-                    if u.get('correo','').lower()==correo and u.get('clave')==clave:
-                        ok, rol, nombre = True, u.get('rol','user'), u.get('nombre', correo)
+                    stored = u.get('clave', '')
+                    if verify_password(clave, stored):
+                        ok, rol, nombre = True, u.get('rol', 'user'), u.get('nombre', correo)
+                        # Auto-upgrade a hash si estaba en texto plano
+                        if not _looks_like_bcrypt(stored):
+                            try:
+                                hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
+                                doc_ref.update({'clave': hashed})
+                            except Exception as _e:
+                                print(f"⚠️ No se pudo auto-encriptar en Firebase: {_e}")
         except Exception as e:
             print(f"⚠️  Error Firebase login: {e}")
 
+        # --- Local JSON como fallback ---
         if not ok:
-            for u in cargar_usuarios():
-                if u.get('correo','').lower()==correo and u.get('clave')==clave:
-                    ok, rol, nombre = True, u.get('rol','user'), u.get('nombre', correo)
-                    break
+            users = cargar_usuarios()
+            for u in users:
+                if u.get('correo', '').lower() == correo:
+                    stored = u.get('clave', '')
+                    if verify_password(clave, stored):
+                        ok, rol, nombre = True, u.get('rol', 'user'), u.get('nombre', correo)
+                        # Auto-upgrade local si estaba en texto plano
+                        if not _looks_like_bcrypt(stored):
+                            try:
+                                for uu in users:
+                                    if uu.get('correo', '').lower() == correo:
+                                        uu['clave'] = bcrypt.generate_password_hash(clave).decode('utf-8')
+                                        break
+                                with open(USUARIOS_JSON, 'w', encoding='utf-8') as f:
+                                    json.dump(users, f, ensure_ascii=False, indent=2)
+                            except Exception as _e:
+                                print(f"⚠️ No se pudo auto-encriptar localmente: {_e}")
+                        break
 
         if ok:
             session['usuario'] = nombre
@@ -227,13 +312,16 @@ def registro_usuario():
                 flash('El correo ya está registrado.', 'warning')
                 return redirect(url_for('registro_usuario'))
 
+        # Encriptar contraseña antes de guardar
+        hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
+
         creado = False
         try:
             if db:
                 db.collection('usuarios').document(correo).set({
                     'nombre': nombre,
                     'correo': correo,
-                    'clave': clave,
+                    'clave': hashed,  # ahora guardamos hash
                     'rol': 'user'
                 })
                 creado = True
@@ -241,7 +329,7 @@ def registro_usuario():
             print(f"⚠️  Error registrando en Firebase: {e}")
 
         if not creado:
-            creado = guardar_usuario_local({'nombre':nombre,'correo':correo,'clave':clave,'rol':'user'})
+            creado = guardar_usuario_local({'nombre': nombre, 'correo': correo, 'clave': hashed, 'rol': 'user'})
 
         if creado:
             flash('Usuario registrado correctamente. Inicia sesión.', 'success')
@@ -329,6 +417,7 @@ def vaciar_carrito():
     session.modified = True
     flash('Carrito vaciado.', 'info')
     return redirect(url_for('mostrar_carrito'))
+
 @app.route('/finalizar_compra')
 def finalizar_compra():
     if not session.get('usuario'):
@@ -344,7 +433,6 @@ def finalizar_compra():
     session['carrito'] = []  # Vaciar carrito al finalizar
     flash('Compra finalizada correctamente. Gracias por tu compra!', 'success')
     return redirect(url_for('index'))
-
 
 # -------- Admin --------
 @app.route('/admin')
@@ -495,7 +583,111 @@ def eliminar_producto(indice):
             flash('No se pudo guardar.', 'danger')
     return redirect(url_for('admin'))
 
+# -------- Recuperación y reseteo de contraseña (envío real) --------
+@app.route("/recuperar", methods=["GET", "POST"])
+def recuperar():
+    if request.method == "POST":
+        correo = request.form["correo"].strip().lower()
+        try:
+            # Verificamos si el correo existe (Firebase o local)
+            usuarios = cargar_usuarios()
+            user_exists = any(u.get("correo") == correo for u in usuarios)
+            if db:
+                try:
+                    doc = db.collection("usuarios").document(correo).get()
+                    user_exists = user_exists or doc.exists
+                except Exception as e:
+                    print(f"⚠️ Error comprobando usuario en Firebase: {e}")
+
+            if not user_exists:
+                flash("El correo no está registrado.", "warning")
+                return redirect(url_for("recuperar"))
+
+            # Generar token válido por 1 hora
+            token = serializer.dumps(correo, salt="recuperar-clave")
+            reset_url = url_for("reset_password", token=token, _external=True)
+
+            # Construir mensaje HTML
+            html_mensaje = f"""
+                <p>Hola,</p>
+                <p>Haz clic en el siguiente enlace para restablecer tu contraseña (válido por 1 hora):</p>
+                <p><a href="{reset_url}">Restablecer contraseña</a></p>
+                <p>Si no solicitaste este cambio, ignora este correo.</p>
+            """
+
+            # Enviar correo real
+            sent = enviar_email(correo, "Recuperación de contraseña - Disfaluvid", html_mensaje)
+            if sent:
+                flash("Se ha enviado un enlace de recuperación a tu correo.", "success")
+            else:
+                flash("No se pudo enviar el enlace. Verifica la configuración de tu correo.", "danger")
+
+        except Exception as e:
+            print(f"⚠️ Error generando token de recuperación: {e}")
+            flash("Error: no se pudo enviar el enlace. Intenta de nuevo.", "danger")
+        return redirect(url_for("login"))
+
+    return render_template("recuperar.html")
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    try:
+        correo = serializer.loads(token, salt="recuperar-clave", max_age=3600)  # 1 hora
+    except SignatureExpired:
+        flash("El enlace de recuperación ha caducado.", "danger")
+        return redirect(url_for("recuperar"))
+    except BadSignature:
+        flash("El enlace de recuperación es inválido.", "danger")
+        return redirect(url_for("recuperar"))
+
+    if request.method == "POST":
+        nueva_password = request.form["password"]
+        confirmar_password = request.form["confirm_password"]
+
+        if not nueva_password or not confirmar_password:
+            flash("Completa ambos campos.", "warning")
+            return redirect(request.url)
+
+        if nueva_password != confirmar_password:
+            flash("Las contraseñas no coinciden.", "danger")
+            return redirect(request.url)
+
+        hashed = bcrypt.generate_password_hash(nueva_password).decode("utf-8")
+
+        try:
+            if db:
+                doc_ref = db.collection("usuarios").document(correo)
+                if doc_ref.get().exists:
+                    doc_ref.update({"clave": hashed})
+                else:
+                    flash("El usuario no existe.", "danger")
+                    return redirect(url_for("recuperar"))
+            else:
+                usuarios = cargar_usuarios()
+                found = False
+                for u in usuarios:
+                    if u.get("correo") == correo:
+                        u["clave"] = hashed
+                        found = True
+                        break
+                if not found:
+                    flash("El usuario no existe.", "danger")
+                    return redirect(url_for("recuperar"))
+                with open(USUARIOS_JSON, "w", encoding="utf-8") as f:
+                    json.dump(usuarios, f, ensure_ascii=False, indent=2)
+
+            flash("Tu contraseña ha sido restablecida con éxito. Ahora puedes iniciar sesión.", "success")
+            return redirect(url_for("login"))
+
+        except Exception as e:
+            print(f"❌ Error actualizando contraseña: {e}")
+            flash("No se pudo actualizar la contraseña. Intenta nuevamente.", "danger")
+            return redirect(request.url)
+
+    return render_template("reset_password.html", token=token)
+
 # -------- Run --------
 if __name__=='__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
+
