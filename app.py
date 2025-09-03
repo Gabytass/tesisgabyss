@@ -582,6 +582,59 @@ def eliminar_producto(indice):
         else:
             flash('No se pudo guardar.', 'danger')
     return redirect(url_for('admin'))
+@app.route('/admin/nuevo_admin', methods=['GET', 'POST'])
+@admin_required  # Solo un admin existente puede crear otro
+def nuevo_admin():
+    if request.method == 'POST':
+        nombre = request.form.get('nombre', '').strip()
+        correo = request.form.get('correo', '').strip().lower()
+        clave = request.form.get('clave', '')
+
+        if not (nombre and correo and clave):
+            flash('Todos los campos son obligatorios.', 'warning')
+            return redirect(url_for('nuevo_admin'))
+
+        # Verificar si ya existe
+        usuarios = cargar_usuarios()
+        for u in usuarios:
+            if u.get('correo','').lower() == correo:
+                flash('El correo ya está registrado.', 'warning')
+                return redirect(url_for('nuevo_admin'))
+
+        # Encriptar contraseña
+        hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
+
+        # Crear usuario admin
+        nuevo = {
+            'nombre': nombre,
+            'correo': correo,
+            'clave': hashed,
+            'rol': 'admin'
+        }
+
+        # Guardar en Firebase si existe
+        ok_cloud = True
+        try:
+            if db:
+                db.collection('usuarios').document(correo).set(nuevo)
+        except Exception as e:
+            ok_cloud = False
+            print(f"⚠️ No se pudo guardar en Firebase: {e}")
+
+        # Guardar local
+        ok_local = guardar_usuario_local(nuevo)
+
+        if ok_local and ok_cloud:
+            flash('Administrador creado correctamente.', 'success')
+        elif ok_local and not ok_cloud:
+            flash('Administrador creado localmente (Firebase falló).', 'warning')
+        else:
+            flash('No se pudo crear el administrador.', 'danger')
+
+        return redirect(url_for('admin'))
+
+    return render_template('nuevo_admin.html')
+
 
 # -------- Recuperación y reseteo de contraseña (envío real) --------
 @app.route("/recuperar", methods=["GET", "POST"])

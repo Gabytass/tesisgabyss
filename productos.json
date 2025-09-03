@@ -10,10 +10,10 @@
   {
     "nombre": "Vitrina Mixta",
     "id": "e56adf40-f2b8-4bb5-9704-09ea9cc4892b",
-    "archivo_ra": "vitrina3_1.glb",
+    "descripcion": "Tavo y Gaby",
     "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
     "precio": 12.0,
-    "descripcion": "Tavo y Gaby"
+    "archivo_ra": "vitrina3_1.glb"
   },
   {
     "nombre": "Vitrina con Mixta",
