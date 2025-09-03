@@ -18,6 +18,11 @@ print("📧 MAIL_USER:", os.getenv("MAIL_USER"))
 print("🔑 MAIL_PASS:", os.getenv("MAIL_PASS"))
 
 
+app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'clave_secreta_local')  # Importante para sesiones
+
+
+
 # -------- Firebase opcional --------
 db = None
 bucket = None
