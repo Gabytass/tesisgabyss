@@ -12,16 +12,12 @@ from dotenv import load_dotenv
 load_dotenv()  # Carga variables de .env
 
 
-
 # Verificamos si se están leyendo las variables de entorno
 print("📧 MAIL_USER:", os.getenv("MAIL_USER"))
 print("🔑 MAIL_PASS:", os.getenv("MAIL_PASS"))
 
-
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'clave_secreta_local')  # Importante para sesiones
-
-
 
 # -------- Firebase opcional --------
 db = None
@@ -38,8 +34,6 @@ except Exception as e:
 UPLOAD_FOLDER = 'static/modelos_ra'
 ALLOWED_EXTENSIONS = {'glb', 'gltf', 'fbx', 'obj'}
 
-app = Flask(__name__)
-app.secret_key = os.environ.get('SECRET_KEY', 'super-secret-local')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -48,26 +42,19 @@ bcrypt = Bcrypt(app)
 serializer = URLSafeTimedSerializer(app.secret_key)
 
 # -------- Función de envío de correo (smtplib) --------
-# Usaremos SMTP SSL (puerto 465). Usa variables de entorno MAIL_USER y MAIL_PASS.
-MAIL_USER = os.environ.get('MAIL_USER')  # tu correo
-MAIL_PASS = os.environ.get('MAIL_PASS')  # app password de Google o contraseña SMTP
+MAIL_USER = os.environ.get('MAIL_USER')
+MAIL_PASS = os.environ.get('MAIL_PASS')
 
 def enviar_email(destino: str, asunto: str, html_mensaje: str) -> bool:
-    """
-    Envía correo usando SMTP SSL. Devuelve True si se envió correctamente.
-    """
     remitente = MAIL_USER
     if not remitente or not MAIL_PASS:
         print("⚠️ Mail no configurado: configura MAIL_USER y MAIL_PASS como variables de entorno.")
         return False
-
     msg = MIMEText(html_mensaje, 'html', 'utf-8')
     msg['Subject'] = asunto
     msg['From'] = remitente
     msg['To'] = destino
-
     try:
-        # conectar con SMTP SSL (Gmail)
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(remitente, MAIL_PASS)
             server.sendmail(remitente, [destino], msg.as_string())
@@ -98,7 +85,6 @@ def _looks_like_bcrypt(s: str) -> bool:
     return isinstance(s, str) and s.startswith("$2")
 
 def verify_password(plain: str, stored: str) -> bool:
-    """Valida contra hash bcrypt si corresponde. Si es texto plano, compara directo (legacy)."""
     if not stored:
         return False
     if _looks_like_bcrypt(stored):
@@ -106,7 +92,6 @@ def verify_password(plain: str, stored: str) -> bool:
             return bcrypt.check_password_hash(stored, plain)
         except Exception:
             return False
-    # compatibilidad con usuarios antiguos en texto plano
     return stored == plain
 
 # -------- Archivos JSON locales --------
@@ -156,7 +141,6 @@ def _leer_local_productos():
     return []
 
 def cargar_productos():
-    """Mezcla productos de Firebase (si hay) + locales."""
     cloud = []
     try:
         if db:
@@ -243,7 +227,6 @@ def login():
 
         ok, rol, nombre = False, 'user', ''
         try:
-            # --- Firebase ---
             if db:
                 doc_ref = db.collection('usuarios').document(correo)
                 doc = doc_ref.get()
@@ -251,8 +234,7 @@ def login():
                     u = _normalize_user(doc.to_dict())
                     stored = u.get('clave', '')
                     if verify_password(clave, stored):
-                        ok, rol, nombre = True, u.get('rol', 'user'), u.get('nombre', correo)
-                        # Auto-upgrade a hash si estaba en texto plano
+                        ok, rol, nombre = True, u.get('rol','user'), u.get('nombre',correo)
                         if not _looks_like_bcrypt(stored):
                             try:
                                 hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
@@ -262,23 +244,21 @@ def login():
         except Exception as e:
             print(f"⚠️  Error Firebase login: {e}")
 
-        # --- Local JSON como fallback ---
         if not ok:
-            users = cargar_usuarios()
-            for u in users:
-                if u.get('correo', '').lower() == correo:
-                    stored = u.get('clave', '')
+            usuarios = cargar_usuarios()
+            for u in usuarios:
+                if u.get('correo','').lower() == correo:
+                    stored = u.get('clave','')
                     if verify_password(clave, stored):
-                        ok, rol, nombre = True, u.get('rol', 'user'), u.get('nombre', correo)
-                        # Auto-upgrade local si estaba en texto plano
+                        ok, rol, nombre = True, u.get('rol','user'), u.get('nombre',correo)
                         if not _looks_like_bcrypt(stored):
                             try:
-                                for uu in users:
-                                    if uu.get('correo', '').lower() == correo:
+                                for uu in usuarios:
+                                    if uu.get('correo','').lower() == correo:
                                         uu['clave'] = bcrypt.generate_password_hash(clave).decode('utf-8')
                                         break
                                 with open(USUARIOS_JSON, 'w', encoding='utf-8') as f:
-                                    json.dump(users, f, ensure_ascii=False, indent=2)
+                                    json.dump(usuarios, f, ensure_ascii=False, indent=2)
                             except Exception as _e:
                                 print(f"⚠️ No se pudo auto-encriptar localmente: {_e}")
                         break
@@ -301,6 +281,7 @@ def logout():
     flash('Sesión cerrada.', 'info')
     return redirect(url_for('index'))
 
+# -------- Registro --------
 @app.route('/registro', methods=['GET','POST'])
 def registro_usuario():
     if request.method=='POST':
@@ -313,28 +294,23 @@ def registro_usuario():
 
         existentes = cargar_usuarios()
         for u in existentes:
-            if u.get('correo','').lower()==correo:
+            if u.get('correo','').lower() == correo:
                 flash('El correo ya está registrado.', 'warning')
                 return redirect(url_for('registro_usuario'))
 
-        # Encriptar contraseña antes de guardar
         hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
-
         creado = False
+        nuevo_usuario = {'nombre': nombre, 'correo': correo, 'clave': hashed, 'rol':'user'}
+
         try:
             if db:
-                db.collection('usuarios').document(correo).set({
-                    'nombre': nombre,
-                    'correo': correo,
-                    'clave': hashed,  # ahora guardamos hash
-                    'rol': 'user'
-                })
+                db.collection('usuarios').document(correo).set(nuevo_usuario)
                 creado = True
         except Exception as e:
             print(f"⚠️  Error registrando en Firebase: {e}")
 
         if not creado:
-            creado = guardar_usuario_local({'nombre': nombre, 'correo': correo, 'clave': hashed, 'rol': 'user'})
+            creado = guardar_usuario_local(nuevo_usuario)
 
         if creado:
             flash('Usuario registrado correctamente. Inicia sesión.', 'success')

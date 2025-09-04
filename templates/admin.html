@@ -24,6 +24,7 @@
 
   <div class="mb-3">
     <a href="{{ url_for('nuevo_producto') }}" class="btn btn-success">Agregar Nuevo Producto</a>
+    <a href="{{ url_for('nuevo_admin') }}" class="btn btn-info">Agregar Administrador</a>
     <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver al Catálogo</a>
   </div>
 
@@ -50,7 +51,11 @@
                alt="Imagen" width="50">
           {% endif %}
         </td>
-        <td>{{ producto.archivo_ra }}</td>
+        <td>
+          {% if producto.archivo_ra %}
+            <a href="{{ url_for('ver_modelo', nombre_archivo=producto.archivo_ra) }}">{{ producto.archivo_ra }}</a>
+          {% endif %}
+        </td>
         <td>
           <a href="{{ url_for('editar_producto', indice=loop.index0) }}" class="btn btn-warning btn-sm">Editar</a>
           <form action="{{ url_for('eliminar_producto', indice=loop.index0) }}" method="POST" style="display:inline;">

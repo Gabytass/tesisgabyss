@@ -30,5 +30,13 @@
     "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
     "precio": 17.0,
     "archivo_ra": "vitrina3.glb"
+  },
+  {
+    "id": "e7c7df32-8456-41f9-bcb0-65fcb2266f09",
+    "nombre": "Gabyss",
+    "descripcion": "hola agbay",
+    "precio": 123.0,
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "archivo_ra": "vitrina3.glb"
   }
 ]
