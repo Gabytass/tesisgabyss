@@ -72,6 +72,11 @@
     {% endif %}
     {% endwith %}
 
+    <!-- Depuración opcional para ver rol -->
+    {% if rol %}
+    <!-- <p class="text-info">Rol actual: {{ rol }}</p> -->
+    {% endif %}
+
     <!-- CAROUSEL DE BANNERS -->
     <div id="bannerCarousel" class="carousel slide carousel-fade mb-5" data-bs-ride="carousel">
       <div class="carousel-inner">
@@ -123,7 +128,7 @@
                 style="background-color: black; border-radius: 6px;">Ver en 3D</a>
               {% endif %}
 
-              {% if rol=='admin' %}
+              {% if rol == 'admin' %}
               <!-- Botones Editar y Eliminar -->
               <div class="mt-2 d-flex justify-content-between">
                 <a href="{{ url_for('editar_producto', indice=loop.index0) }}" class="btn btn-warning btn-sm">Editar</a>
@@ -145,7 +150,7 @@
     </div>
 
     <!-- Botón admin general -->
-    {% if rol=='admin' %}
+    {% if rol == 'admin' %}
     <div class="text-center mb-4">
       <a href="{{ url_for('admin') }}" class="btn btn-outline-dark px-4 py-2">Panel de Administración</a>
       <a href="{{ url_for('nuevo_producto') }}" class="btn btn-outline-success px-4 py-2">Agregar Producto</a>
@@ -170,6 +175,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
 
 
 

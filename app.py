@@ -215,18 +215,18 @@ def guardar_usuario_local(nuevo):
 from functools import wraps
 from flask import session, redirect, url_for, flash
 
-def admin_required(f):
-    """
-    Solo permite acceso a usuarios con rol 'admin'.
-    Redirige al login si no es admin o no hay sesión.
-    """
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'usuario' not in session or session.get('rol') != 'admin':
-            flash('Acceso denegado. Solo administradores.', 'danger')
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
+#def admin_required(f):
+   # """
+    #Solo permite acceso a usuarios con rol 'admin'.
+    #Redirige al login si no es admin o no hay sesión.
+#    """
+    #@wraps(f)
+    #def decorated_function(*args, **kwargs):
+        #if 'usuario' not in session or session.get('rol') != 'admin':
+            #flash('Acceso denegado. Solo administradores.', 'danger')
+            #return redirect(url_for('login'))
+        #return f(*args, **kwargs)
+    #return decorated_function
 
 
 # -------- Rutas --------
@@ -307,15 +307,20 @@ def login():
                         break
 
         if ok:
+            # 🔹 Guardamos usuario y rol en la sesión
             session['usuario'] = nombre
-            session['rol'] = rol  # 🔹 Guardar rol exacto para @admin_required
-            flash('Inicio de sesión exitoso', 'success')
+            session['rol'] = rol  
+            print(f"DEBUG: Usuario {nombre} con rol {rol} inició sesión")
+
+            flash('Inicio de sesión exitoso ✅', 'success')
+
             # 🔹 Redirigir según rol
             if rol == 'admin':
                 return redirect(url_for('admin'))
-            return redirect(url_for('index'))
+            else:
+                return redirect(url_for('index'))
         else:
-            flash('Credenciales incorrectas.', 'danger')
+            flash('Credenciales incorrectas ❌', 'danger')
             return redirect(url_for('login'))
 
     return render_template('login.html')
@@ -328,6 +333,7 @@ def logout():
     session.pop('carrito', None)
     flash('Sesión cerrada.', 'info')
     return redirect(url_for('index'))
+
 
 
 # -------- Registro de Usuario/Admin --------
@@ -803,4 +809,3 @@ def reset_password(token):
 if __name__=='__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
-
