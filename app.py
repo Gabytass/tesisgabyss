@@ -173,6 +173,11 @@ def guardar_productos(productos):
 
 # -------- Cargar/guardar usuarios --------
 def cargar_usuarios():
+    """
+    Carga los usuarios desde Firebase si está disponible,
+    de lo contrario carga desde el JSON local.
+    Devuelve una lista de diccionarios de usuarios normalizados.
+    """
     try:
         if db:
             docs = db.collection('usuarios').stream()
@@ -182,6 +187,7 @@ def cargar_usuarios():
     except Exception as e:
         print(f"⚠️  Error leyendo usuarios de Firebase: {e}")
 
+    # Si Firebase falla o no hay usuarios, cargar desde JSON local
     if os.path.exists(USUARIOS_JSON):
         try:
             with open(USUARIOS_JSON, 'r', encoding='utf-8') as f:
@@ -192,6 +198,9 @@ def cargar_usuarios():
     return []
 
 def guardar_usuario_local(nuevo):
+    """
+    Guarda un nuevo usuario en el JSON local.
+    """
     usuarios = cargar_usuarios()
     usuarios.append(_normalize_user(nuevo))
     try:
@@ -202,19 +211,42 @@ def guardar_usuario_local(nuevo):
         print(f"❌ Error guardando {USUARIOS_JSON}: {e}")
         return False
 
+# Decorador para rutas de administrador
+from functools import wraps
+from flask import session, redirect, url_for, flash
+
+def admin_required(f):
+    """
+    Solo permite acceso a usuarios con rol 'admin'.
+    Redirige al login si no es admin o no hay sesión.
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'usuario' not in session or session.get('rol') != 'admin':
+            flash('Acceso denegado. Solo administradores.', 'danger')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # -------- Rutas --------
 @app.route('/')
 def index():
     productos = cargar_productos()
     productos = [_normalize_product(p, i) for i, p in enumerate(productos)]
-    return render_template('index.html', productos=productos)
+    carrito_cant = len(session.get('carrito', []))  # Contar elementos del carrito
+    rol = session.get('rol', 'user')  # Por defecto 'user' si no hay sesión
+    return render_template('index.html', productos=productos, carrito_cant=carrito_cant, rol=rol)
 
 @app.route('/ver_modelo/<nombre_archivo>')
 def ver_modelo(nombre_archivo):
     ruta = os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo)
     if not os.path.exists(ruta):
         abort(404)
-    return render_template('visor_modelo.html', nombre_archivo=nombre_archivo)
+    carrito_cant = len(session.get('carrito', []))  # Para mantener consistencia si hay navbar
+    rol = session.get('rol', 'user')
+    return render_template('visor_modelo.html', nombre_archivo=nombre_archivo, carrito_cant=carrito_cant, rol=rol)
+
 
 # -------- Auth --------
 @app.route('/login', methods=['GET', 'POST'])
@@ -222,11 +254,14 @@ def login():
     if request.method == 'POST':
         correo = request.form.get('correo', '').strip().lower()
         clave = request.form.get('clave', '')
+
         if not correo or not clave:
             flash('Completa correo y contraseña.', 'warning')
             return redirect(url_for('login'))
 
         ok, rol, nombre = False, 'user', ''
+
+        # 🔹 Intentar Firebase primero
         try:
             if db:
                 doc_ref = db.collection('usuarios').document(correo)
@@ -234,8 +269,11 @@ def login():
                 if doc.exists:
                     u = _normalize_user(doc.to_dict())
                     stored = u.get('clave', '')
+                    rol = u.get('rol', 'user')  # 🔹 Aseguramos rol correcto
+                    nombre = u.get('nombre', correo)
                     if verify_password(clave, stored):
-                        ok, rol, nombre = True, u.get('rol','user'), u.get('nombre',correo)
+                        ok = True
+                        # 🔹 Auto-encriptar si no está en bcrypt
                         if not _looks_like_bcrypt(stored):
                             try:
                                 hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
@@ -243,15 +281,19 @@ def login():
                             except Exception as _e:
                                 print(f"⚠️ No se pudo auto-encriptar en Firebase: {_e}")
         except Exception as e:
-            print(f"⚠️  Error Firebase login: {e}")
+            print(f"⚠️ Error Firebase login: {e}")
 
+        # 🔹 Si falla Firebase, intentar JSON local
         if not ok:
             usuarios = cargar_usuarios()
             for u in usuarios:
                 if u.get('correo','').lower() == correo:
                     stored = u.get('clave','')
+                    rol = u.get('rol', 'user')
+                    nombre = u.get('nombre', correo)
                     if verify_password(clave, stored):
-                        ok, rol, nombre = True, u.get('rol','user'), u.get('nombre',correo)
+                        ok = True
+                        # 🔹 Auto-encriptar local si no es bcrypt
                         if not _looks_like_bcrypt(stored):
                             try:
                                 for uu in usuarios:
@@ -266,13 +308,12 @@ def login():
 
         if ok:
             session['usuario'] = nombre
-            session['rol'] = rol
+            session['rol'] = rol  # 🔹 Guardar rol exacto para @admin_required
             flash('Inicio de sesión exitoso', 'success')
             # 🔹 Redirigir según rol
             if rol == 'admin':
                 return redirect(url_for('admin'))
-            else:
-                return redirect(url_for('index'))
+            return redirect(url_for('index'))
         else:
             flash('Credenciales incorrectas.', 'danger')
             return redirect(url_for('login'))
@@ -287,6 +328,7 @@ def logout():
     session.pop('carrito', None)
     flash('Sesión cerrada.', 'info')
     return redirect(url_for('index'))
+
 
 # -------- Registro de Usuario/Admin --------
 @app.route('/registro', methods=['GET', 'POST'])

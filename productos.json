@@ -8,12 +8,12 @@
     "id": "W8xY51gvAJB8ut3Qtane"
   },
   {
-    "nombre": "Vitrina Mixta",
-    "id": "e56adf40-f2b8-4bb5-9704-09ea9cc4892b",
-    "descripcion": "Tavo y Gaby",
+    "nombre": "Gabyss",
+    "id": "e7c7df32-8456-41f9-bcb0-65fcb2266f09",
+    "descripcion": "hola agbay",
     "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
-    "precio": 12.0,
-    "archivo_ra": "vitrina3_1.glb"
+    "precio": 123.0,
+    "archivo_ra": "vitrina3.glb"
   },
   {
     "nombre": "Vitrina con Mixta",
@@ -29,14 +29,6 @@
     "descripcion": "vidrio de 6mmclaro \r\n60cm de frente\r\n 40cm de fondo\r\n 180cm de altura",
     "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
     "precio": 17.0,
-    "archivo_ra": "vitrina3.glb"
-  },
-  {
-    "id": "e7c7df32-8456-41f9-bcb0-65fcb2266f09",
-    "nombre": "Gabyss",
-    "descripcion": "hola agbay",
-    "precio": 123.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
     "archivo_ra": "vitrina3.glb"
   }
 ]
