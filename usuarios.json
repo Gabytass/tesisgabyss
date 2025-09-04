@@ -1,0 +1,50 @@
+[
+  {
+    "nombre": "Christian",
+    "rol": "user",
+    "clave": "$2b$12$fXMKqEY2nTUEI4n4dVnpOONYXdYtnrarufFcRWccTL/FdEqnveTRW",
+    "correo": "christiancm3@hotmail.com"
+  },
+  {
+    "nombre": "Ernesto",
+    "rol": "user",
+    "clave": "$2b$12$p5NaYRBVu6gpO6P.MKPZr.6WatloIWmZ8F5TUHqmPmbquo.doAqQS",
+    "correo": "ernesto.forever1980@gmail.com"
+  },
+  {
+    "nombre": "Estefania",
+    "rol": "admin",
+    "clave": "$2b$12$yIMfGpNLw56IrQBgslRlduGxKmwOjmHbIDQuROmFf5HLs7ArPMRom",
+    "correo": "estefaniacarolina233@gmail.com"
+  },
+  {
+    "nombre": "Pathy",
+    "rol": "user",
+    "clave": "$2b$12$pvk/TdpU6iqMsGVOa2rzfeKRfl6xp5rb8CLF5Q48z9pYaL.Obga8a",
+    "correo": "pathy@gmail.com"
+  },
+  {
+    "nombre": "Pinky",
+    "rol": "user",
+    "clave": "$2b$12$.agA4L6A/gvH6NHrh.aC/OGjEcbDDCSgR/lA7YDmDvVLvFnrlsA1e",
+    "correo": "pigui@gamil.com"
+  },
+  {
+    "nombre": "Rojas Benavides Gabriela Maribel",
+    "rol": "admin",
+    "clave": "$2b$12$jbati0.VCjVW5x7qm2lebO6o2jTmL1ZId.B8mgJDXFvpKAPSD2Ye6",
+    "correo": "rojasgabriela633@gmail.com"
+  },
+  {
+    "nombre": "Tavo",
+    "rol": "user",
+    "clave": "$2b$12$ImLHZXG0Tf48txNFWMp5/u4BAfTyraKgTqAoCyKPVpuxs4ZTZcYn6",
+    "correo": "tavorojas@gmail.com"
+  },
+  {
+    "nombre": "Estefania",
+    "correo": "estefaniacarolina233@gmail.com",
+    "clave": "$2b$12$yIMfGpNLw56IrQBgslRlduGxKmwOjmHbIDQuROmFf5HLs7ArPMRom",
+    "rol": "admin"
+  }
+]
