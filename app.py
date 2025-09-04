@@ -2,6 +2,7 @@ import os
 import json
 import uuid
 import smtplib
+from firebase_admin import auth
 from email.mime.text import MIMEText
 from functools import wraps
 from flask import Flask, render_template, redirect, url_for, request, session, flash, abort
@@ -267,11 +268,17 @@ def login():
             session['usuario'] = nombre
             session['rol'] = rol
             flash('Inicio de sesión exitoso', 'success')
-            return redirect(url_for('index'))
+            # 🔹 Redirigir según rol
+            if rol == 'admin':
+                return redirect(url_for('admin'))
+            else:
+                return redirect(url_for('index'))
         else:
             flash('Credenciales incorrectas.', 'danger')
             return redirect(url_for('login'))
+
     return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
@@ -281,34 +288,55 @@ def logout():
     flash('Sesión cerrada.', 'info')
     return redirect(url_for('index'))
 
-# -------- Registro --------
-@app.route('/registro', methods=['GET','POST'])
+# -------- Registro de Usuario/Admin --------
+@app.route('/registro', methods=['GET', 'POST'])
 def registro_usuario():
-    if request.method=='POST':
-        nombre = request.form.get('nombre','').strip()
-        correo = request.form.get('correo','').strip().lower()
-        clave = request.form.get('clave','')
+    if request.method == 'POST':
+        nombre = request.form.get('nombre', '').strip()
+        correo = request.form.get('correo', '').strip().lower()
+        clave = request.form.get('clave', '')
+        rol = request.form.get('rol', 'user')  # Puede ser 'user' o 'admin'
+
         if not (nombre and correo and clave):
             flash('Todos los campos son obligatorios.', 'warning')
             return redirect(url_for('registro_usuario'))
 
-        existentes = cargar_usuarios()
+        # Verificar si ya existe en Firebase
+        existe_en_firebase = False
+        try:
+            if db:
+                doc_ref = db.collection('usuarios').document(correo)
+                doc = doc_ref.get()
+                if doc.exists:
+                    existe_en_firebase = True
+        except Exception as e:
+            print(f"⚠️ Error verificando Firebase: {e}")
+
+        # Verificar en archivo local si no existe en Firebase
+        existentes = cargar_usuarios() if not existe_en_firebase else []
         for u in existentes:
             if u.get('correo','').lower() == correo:
                 flash('El correo ya está registrado.', 'warning')
                 return redirect(url_for('registro_usuario'))
 
-        hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
-        creado = False
-        nuevo_usuario = {'nombre': nombre, 'correo': correo, 'clave': hashed, 'rol':'user'}
+        if existe_en_firebase:
+            flash('El correo ya está registrado.', 'warning')
+            return redirect(url_for('registro_usuario'))
 
+        # Encriptar contraseña
+        hashed = bcrypt.generate_password_hash(clave).decode('utf-8')
+        nuevo_usuario = {'nombre': nombre, 'correo': correo, 'clave': hashed, 'rol': rol}
+
+        creado = False
+        # Intentar guardar en Firebase
         try:
             if db:
                 db.collection('usuarios').document(correo).set(nuevo_usuario)
                 creado = True
         except Exception as e:
-            print(f"⚠️  Error registrando en Firebase: {e}")
+            print(f"⚠️ Error registrando en Firebase: {e}")
 
+        # Si falla Firebase, guardar localmente
         if not creado:
             creado = guardar_usuario_local(nuevo_usuario)
 
@@ -318,6 +346,7 @@ def registro_usuario():
         else:
             flash('No se pudo registrar el usuario.', 'danger')
             return redirect(url_for('registro_usuario'))
+
     return render_template('registro.html')
 
 # -------- Carrito --------
@@ -422,6 +451,7 @@ def admin():
     productos = cargar_productos()
     return render_template('admin.html', productos=productos)
 
+
 @app.route('/admin/nuevo', methods=['GET','POST'])
 @admin_required
 def nuevo_producto():
@@ -448,7 +478,6 @@ def nuevo_producto():
             archivo_ra.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra))
 
         productos = cargar_productos()
-
         new_id = str(uuid.uuid4())
         nuevo = {
             'id': new_id,
@@ -463,26 +492,27 @@ def nuevo_producto():
         productos.append(nuevo)
         ok_local = guardar_productos(productos)
 
-        # Guardar en Firestore si existe
+        # Guardar en Firebase
         ok_cloud = True
         if db:
             try:
                 db.collection('productos').document(new_id).set(nuevo)
             except Exception as e:
                 ok_cloud = False
-                print(f"⚠️  No se pudo guardar en Firebase: {e}")
+                print(f"⚠️ No se pudo guardar en Firebase: {e}")
 
         if ok_local and ok_cloud:
             flash('Producto agregado.', 'success')
             return redirect(url_for('admin'))
-
-        if ok_local and not ok_cloud:
+        elif ok_local and not ok_cloud:
             flash('Producto guardado localmente. (Sincronización con Firebase falló)', 'warning')
             return redirect(url_for('admin'))
+        else:
+            flash('No se pudo guardar el producto.', 'danger')
+            return redirect(url_for('nuevo_producto'))
 
-        flash('No se pudo guardar el producto.', 'danger')
-        return redirect(url_for('nuevo_producto'))
     return render_template('nuevo_producto.html')
+
 
 @app.route('/admin/editar/<int:indice>', methods=['GET','POST'])
 @admin_required
@@ -511,6 +541,7 @@ def editar_producto(indice):
             'precio': precio,
             'imagen': imagen
         })
+
         if archivo_ra and allowed_file(archivo_ra.filename):
             nombre_archivo_ra = secure_filename(archivo_ra.filename)
             archivo_ra.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra))
@@ -526,18 +557,20 @@ def editar_producto(indice):
                 db.collection('productos').document(pid).set(productos[indice], merge=True)
             except Exception as e:
                 ok_cloud = False
-                print(f"⚠️  No se pudo actualizar en Firebase: {e}")
+                print(f"⚠️ No se pudo actualizar en Firebase: {e}")
 
         if ok_local and ok_cloud:
             flash('Producto actualizado.', 'success')
             return redirect(url_for('admin'))
-        if ok_local and not ok_cloud:
+        elif ok_local and not ok_cloud:
             flash('Actualizado localmente (Firebase falló).', 'warning')
             return redirect(url_for('admin'))
+        else:
+            flash('No se pudo guardar.', 'danger')
+            return redirect(url_for('editar_producto', indice=indice))
 
-        flash('No se pudo guardar.', 'danger')
-        return redirect(url_for('editar_producto', indice=indice))
     return render_template('editar_producto.html', producto=productos[indice], indice=indice)
+
 
 @app.route('/admin/eliminar/<int:indice>', methods=['POST'])
 @admin_required
@@ -554,7 +587,7 @@ def eliminar_producto(indice):
                 db.collection('productos').document(pid).delete()
             except Exception as e:
                 ok_cloud = False
-                print(f"⚠️  No se pudo eliminar en Firebase: {e}")
+                print(f"⚠️ No se pudo eliminar en Firebase: {e}")
 
         if ok_local and ok_cloud:
             flash('Producto eliminado.', 'success')
@@ -562,14 +595,17 @@ def eliminar_producto(indice):
             flash('Eliminado localmente (Firebase falló).', 'warning')
         else:
             flash('No se pudo guardar.', 'danger')
+
     return redirect(url_for('admin'))
-@app.route('/admin/nuevo_admin', methods=['GET', 'POST'])
+
+
+@app.route('/admin/nuevo_admin', methods=['GET','POST'])
 @admin_required  # Solo un admin existente puede crear otro
 def nuevo_admin():
-    if request.method == 'POST':
-        nombre = request.form.get('nombre', '').strip()
-        correo = request.form.get('correo', '').strip().lower()
-        clave = request.form.get('clave', '')
+    if request.method=='POST':
+        nombre = request.form.get('nombre','').strip()
+        correo = request.form.get('correo','').strip().lower()
+        clave = request.form.get('clave','')
 
         if not (nombre and correo and clave):
             flash('Todos los campos son obligatorios.', 'warning')
@@ -593,7 +629,7 @@ def nuevo_admin():
             'rol': 'admin'
         }
 
-        # Guardar en Firebase si existe
+        # Guardar en Firebase
         ok_cloud = True
         try:
             if db:
@@ -615,6 +651,7 @@ def nuevo_admin():
         return redirect(url_for('admin'))
 
     return render_template('nuevo_admin.html')
+
 
 
 # -------- Recuperación y reseteo de contraseña (envío real) --------

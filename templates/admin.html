@@ -47,7 +47,7 @@
         <td>${{ '%.2f'|format(producto.precio) }}</td>
         <td>
           {% if producto.imagen %}
-          <img src="{{ producto.imagen if producto.imagen.startswith('http') else url_for('static', filename=producto.imagen) }}"
+          <img src="{{ producto.imagen if producto.imagen.startswith('http') else url_for('static', filename='modelos_ra/' ~ producto.imagen) }}"
                alt="Imagen" width="50">
           {% endif %}
         </td>
@@ -72,6 +72,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 
 

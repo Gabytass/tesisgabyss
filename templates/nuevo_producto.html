@@ -1,3 +1,4 @@
+<!-- templates/nuevo_producto.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,8 +9,8 @@
 </head>
 <body class="bg-light">
 
-<div class="container mt-5">
-  <h2>Agregar Nuevo Producto</h2>
+<div class="container mt-5" style="max-width: 600px;">
+  <h2 class="mb-4">Agregar Nuevo Producto</h2>
 
   {% with mensajes = get_flashed_messages(with_categories=true) %}
   {% if mensajes %}
@@ -30,7 +31,7 @@
 
     <div class="mb-3">
       <label class="form-label">Descripción</label>
-      <textarea name="descripcion" class="form-control" required></textarea>
+      <textarea name="descripcion" class="form-control" rows="3" required></textarea>
     </div>
 
     <div class="mb-3">
@@ -48,8 +49,10 @@
       <input type="file" name="archivo_ra" class="form-control">
     </div>
 
-    <button type="submit" class="btn btn-success">Guardar Producto</button>
-    <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancelar</a>
+    <div class="text-center">
+      <button type="submit" class="btn btn-success">Guardar Producto</button>
+      <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancelar</a>
+    </div>
   </form>
 </div>
 
