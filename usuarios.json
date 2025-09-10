@@ -1,5 +1,18 @@
 [
   {
+    "nombre": "mesa",
+    "rol": "user",
+    "uid": "27d7c3de-1a57-459f-b136-e71b0865f6cb",
+    "clave": "$2b$12$xENe/NOLoMlFOrurWMIizeGLftLbZN7nPNcOaD44M7kCjXxldQSJa",
+    "correo": "mesa@gmail.com"
+  },
+  {
+    "nombre": "Axel",
+    "rol": "user",
+    "clave": "$2b$12$QP2UPyvun2pRHuQdSOmps.AWt/eVkwWkjPWXDaV7JBqixPUsNPaFO",
+    "correo": "axel@gmail.com"
+  },
+  {
     "nombre": "Christian",
     "rol": "user",
     "clave": "$2b$12$fXMKqEY2nTUEI4n4dVnpOONYXdYtnrarufFcRWccTL/FdEqnveTRW",
@@ -18,33 +31,27 @@
     "correo": "estefaniacarolina233@gmail.com"
   },
   {
-    "nombre": "Pathy",
-    "rol": "user",
-    "clave": "$2b$12$pvk/TdpU6iqMsGVOa2rzfeKRfl6xp5rb8CLF5Q48z9pYaL.Obga8a",
-    "correo": "pathy@gmail.com"
+    "nombre": "Gabriel",
+    "rol": "admin",
+    "clave": "$2b$12$rSd6TFJ60U6dnWwb8I4hzemdwi35B/EYWoMcTIssSgzhbyTYV6KNS",
+    "correo": "gabrielmediavilla1450@gmail.com"
   },
   {
-    "nombre": "Pinky",
+    "nombre": "Jarabe",
     "rol": "user",
-    "clave": "$2b$12$.agA4L6A/gvH6NHrh.aC/OGjEcbDDCSgR/lA7YDmDvVLvFnrlsA1e",
-    "correo": "pigui@gamil.com"
+    "clave": "$2b$12$e1RXiuTa4zACa6U4kNk7H.oKq3nO4lbhwCuWNDIrulm4aDkD9Hx/.",
+    "correo": "jarabe@gmail.com"
   },
   {
     "nombre": "Rojas Benavides Gabriela Maribel",
     "rol": "admin",
-    "clave": "$2b$12$jbati0.VCjVW5x7qm2lebO6o2jTmL1ZId.B8mgJDXFvpKAPSD2Ye6",
+    "clave": "$2b$12$gmD917DrMvwSw4zVVIoWH.Cu3ZLfcgSL7rqLPfmWeNgKA0gjl7DZK",
     "correo": "rojasgabriela633@gmail.com"
   },
   {
-    "nombre": "Tavo",
-    "rol": "user",
-    "clave": "$2b$12$ImLHZXG0Tf48txNFWMp5/u4BAfTyraKgTqAoCyKPVpuxs4ZTZcYn6",
-    "correo": "tavorojas@gmail.com"
-  },
-  {
-    "nombre": "Estefania",
-    "correo": "estefaniacarolina233@gmail.com",
-    "clave": "$2b$12$yIMfGpNLw56IrQBgslRlduGxKmwOjmHbIDQuROmFf5HLs7ArPMRom",
+    "nombre": "Gabriel",
+    "correo": "gabrielmediavilla1450@gmail.com",
+    "clave": "$2b$12$rSd6TFJ60U6dnWwb8I4hzemdwi35B/EYWoMcTIssSgzhbyTYV6KNS",
     "rol": "admin"
   }
 ]
