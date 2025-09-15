@@ -154,6 +154,11 @@ def cargar_productos():
         print(f"⚠️  Error leyendo productos de Firebase: {e}")
 
     local = _leer_local_productos()
+    # 🔹 Si Firebase no devolvió nada, usar los locales
+    if not cloud and local:
+        print("📂 Usando productos locales porque Firebase no devolvió datos.")
+        return local
+
     merged = {p['id']: p for p in cloud}
     for p in local:
         if p['id'] not in merged:
@@ -184,6 +189,8 @@ def cargar_usuarios():
             users = [_normalize_user(d.to_dict()) for d in docs]
             if users:
                 return users
+            else:
+                print("📂 Usando usuarios locales porque Firebase no devolvió datos.")
     except Exception as e:
         print(f"⚠️  Error leyendo usuarios de Firebase: {e}")
 
@@ -195,7 +202,9 @@ def cargar_usuarios():
             return [_normalize_user(u) for u in data]
         except Exception as e:
             print(f"⚠️  Error leyendo {USUARIOS_JSON}: {e}")
+
     return []
+
 
 def guardar_usuario_local(nuevo):
     """
@@ -210,6 +219,7 @@ def guardar_usuario_local(nuevo):
     except Exception as e:
         print(f"❌ Error guardando {USUARIOS_JSON}: {e}")
         return False
+
 
 # Decorador para rutas de administrador
 from functools import wraps
