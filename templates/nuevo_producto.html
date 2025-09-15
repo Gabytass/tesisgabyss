@@ -24,31 +24,53 @@
   {% endwith %}
 
   <form action="{{ url_for('nuevo_producto') }}" method="POST" enctype="multipart/form-data">
+    <!-- Nombre -->
     <div class="mb-3">
       <label class="form-label">Nombre</label>
       <input type="text" name="nombre" class="form-control" required>
     </div>
 
+    <!-- Descripción -->
     <div class="mb-3">
       <label class="form-label">Descripción</label>
       <textarea name="descripcion" class="form-control" rows="3" required></textarea>
     </div>
 
+    <!-- Precio -->
     <div class="mb-3">
       <label class="form-label">Precio</label>
       <input type="number" step="0.01" name="precio" class="form-control" required>
     </div>
 
+    <!-- Medidas -->
+    <div class="mb-3">
+      <label class="form-label">Frente (cm)</label>
+      <input type="number" step="0.01" name="frente" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Fondo (cm)</label>
+      <input type="number" step="0.01" name="fondo" class="form-control">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Altura (cm)</label>
+      <input type="number" step="0.01" name="altura" class="form-control">
+    </div>
+
+    <!-- Imagen -->
     <div class="mb-3">
       <label class="form-label">Imagen (URL o archivo en /static)</label>
       <input type="text" name="imagen" class="form-control" required>
     </div>
 
+    <!-- Archivo 3D -->
     <div class="mb-3">
       <label class="form-label">Archivo 3D (.glb, .gltf, .fbx, .obj)</label>
       <input type="file" name="archivo_ra" class="form-control">
     </div>
 
+    <!-- Botones -->
     <div class="text-center">
       <button type="submit" class="btn btn-success">Guardar Producto</button>
       <a href="{{ url_for('admin') }}" class="btn btn-secondary">Cancelar</a>

@@ -503,7 +503,7 @@ def admin():
 @app.route('/admin/nuevo', methods=['GET','POST'])
 @admin_required
 def nuevo_producto():
-    if request.method=='POST':
+    if request.method == 'POST':
         nombre = request.form.get('nombre','').strip()
         descripcion = request.form.get('descripcion','').strip()
         precio = request.form.get('precio','0').strip()
@@ -525,7 +525,6 @@ def nuevo_producto():
             nombre_archivo_ra = secure_filename(archivo_ra.filename)
             archivo_ra.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra))
 
-        productos = cargar_productos()
         new_id = str(uuid.uuid4())
         nuevo = {
             'id': new_id,
@@ -533,31 +532,32 @@ def nuevo_producto():
             'descripcion': descripcion,
             'precio': precio,
             'imagen': imagen,
-            'archivo_ra': nombre_archivo_ra
+            'archivo_ra': nombre_archivo_ra,
+            'frente': frente,
+            'fondo': fondo,
+            'altura': altura
         }
 
-        # Guardar local (offline)
-        productos.append(nuevo)
-        ok_local = guardar_productos(productos)
-
-        # Guardar en Firebase
-        ok_cloud = True
+        # Guardar en Firebase primero
+        ok_cloud = False
         if db:
             try:
                 db.collection('productos').document(new_id).set(nuevo)
+                ok_cloud = True
+                print(f"✅ Producto guardado en Firebase: {nombre}")
             except Exception as e:
-                ok_cloud = False
-                print(f"⚠️ No se pudo guardar en Firebase: {e}")
+                print(f"❌ Error guardando en Firebase: {e}")
 
-        if ok_local and ok_cloud:
-            flash('Producto agregado.', 'success')
+        # Si Firebase falla, guardar en local
+        if not ok_cloud:
+            productos = cargar_productos()
+            productos.append(nuevo)
+            guardar_productos(productos)
+            flash('Producto guardado localmente (Firebase no disponible).', 'warning')
             return redirect(url_for('admin'))
-        elif ok_local and not ok_cloud:
-            flash('Producto guardado localmente. (Sincronización con Firebase falló)', 'warning')
-            return redirect(url_for('admin'))
-        else:
-            flash('No se pudo guardar el producto.', 'danger')
-            return redirect(url_for('nuevo_producto'))
+
+        flash('Producto agregado correctamente ✅', 'success')
+        return redirect(url_for('admin'))
 
     return render_template('nuevo_producto.html')
 
@@ -570,11 +570,14 @@ def editar_producto(indice):
         flash('Producto no encontrado.', 'danger')
         return redirect(url_for('admin'))
 
-    if request.method=='POST':
+    if request.method == 'POST':
         nombre = request.form.get('nombre','').strip()
         descripcion = request.form.get('descripcion','').strip()
         precio = request.form.get('precio','0').strip()
         imagen = request.form.get('imagen','').strip()
+        frente = request.form.get('frente')
+        fondo = request.form.get('fondo')
+        altura = request.form.get('altura')
         archivo_ra = request.files.get('archivo_ra')
 
         try:
@@ -587,7 +590,11 @@ def editar_producto(indice):
             'nombre': nombre,
             'descripcion': descripcion,
             'precio': precio,
-            'imagen': imagen
+            'imagen': imagen,
+            'frente': frente,
+            'fondo': fondo,
+            'altura': altura
+
         })
 
         if archivo_ra and allowed_file(archivo_ra.filename):
@@ -595,27 +602,25 @@ def editar_producto(indice):
             archivo_ra.save(os.path.join(app.config['UPLOAD_FOLDER'], nombre_archivo_ra))
             productos[indice]['archivo_ra'] = nombre_archivo_ra
 
-        ok_local = guardar_productos(productos)
-
-        # Sincronizar con Firebase
-        ok_cloud = True
+        # Guardar en Firebase primero
+        ok_cloud = False
         if db:
             try:
                 pid = str(productos[indice]['id'])
                 db.collection('productos').document(pid).set(productos[indice], merge=True)
+                ok_cloud = True
+                print(f"✅ Producto actualizado en Firebase: {pid}")
             except Exception as e:
-                ok_cloud = False
-                print(f"⚠️ No se pudo actualizar en Firebase: {e}")
+                print(f"❌ Error actualizando en Firebase: {e}")
 
-        if ok_local and ok_cloud:
-            flash('Producto actualizado.', 'success')
+        # Si Firebase falla, guardar local
+        if not ok_cloud:
+            guardar_productos(productos)
+            flash('Producto actualizado localmente (Firebase no disponible).', 'warning')
             return redirect(url_for('admin'))
-        elif ok_local and not ok_cloud:
-            flash('Actualizado localmente (Firebase falló).', 'warning')
-            return redirect(url_for('admin'))
-        else:
-            flash('No se pudo guardar.', 'danger')
-            return redirect(url_for('editar_producto', indice=indice))
+
+        flash('Producto actualizado correctamente ✅', 'success')
+        return redirect(url_for('admin'))
 
     return render_template('editar_producto.html', producto=productos[indice], indice=indice)
 
@@ -626,23 +631,28 @@ def eliminar_producto(indice):
     productos = cargar_productos()
     if 0 <= indice < len(productos):
         pid = str(productos[indice]['id'])
+        producto_nombre = productos[indice]['nombre']
         productos.pop(indice)
-        ok_local = guardar_productos(productos)
 
-        ok_cloud = True
+        # Eliminar en Firebase primero
+        ok_cloud = False
         if db:
             try:
                 db.collection('productos').document(pid).delete()
+                ok_cloud = True
+                print(f"✅ Producto eliminado de Firebase: {producto_nombre}")
             except Exception as e:
-                ok_cloud = False
-                print(f"⚠️ No se pudo eliminar en Firebase: {e}")
+                print(f"❌ Error eliminando en Firebase: {e}")
 
-        if ok_local and ok_cloud:
-            flash('Producto eliminado.', 'success')
-        elif ok_local and not ok_cloud:
-            flash('Eliminado localmente (Firebase falló).', 'warning')
-        else:
-            flash('No se pudo guardar.', 'danger')
+        # Si Firebase falla, guardar lista local
+        if not ok_cloud:
+            guardar_productos(productos)
+            flash('Producto eliminado localmente (Firebase no disponible).', 'warning')
+            return redirect(url_for('admin'))
+
+        # Si Firebase fue exitoso, actualizar local también
+        guardar_productos(productos)
+        flash('Producto eliminado correctamente ✅', 'success')
 
     return redirect(url_for('admin'))
 
@@ -650,7 +660,7 @@ def eliminar_producto(indice):
 @app.route('/admin/nuevo_admin', methods=['GET','POST'])
 @admin_required  # Solo un admin existente puede crear otro
 def nuevo_admin():
-    if request.method=='POST':
+    if request.method == 'POST':
         nombre = request.form.get('nombre','').strip()
         correo = request.form.get('correo','').strip().lower()
         clave = request.form.get('clave','')
@@ -677,30 +687,26 @@ def nuevo_admin():
             'rol': 'admin'
         }
 
-        # Guardar en Firebase
-        ok_cloud = True
-        try:
-            if db:
+        # Guardar en Firebase primero
+        ok_cloud = False
+        if db:
+            try:
                 db.collection('usuarios').document(correo).set(nuevo)
-        except Exception as e:
-            ok_cloud = False
-            print(f"⚠️ No se pudo guardar en Firebase: {e}")
+                ok_cloud = True
+                print(f"✅ Nuevo admin guardado en Firebase: {correo}")
+            except Exception as e:
+                print(f"❌ Error guardando admin en Firebase: {e}")
 
-        # Guardar local
-        ok_local = guardar_usuario_local(nuevo)
+        # Si Firebase falla, guardar local
+        if not ok_cloud:
+            guardar_usuario_local(nuevo)
+            flash('Administrador creado localmente (Firebase no disponible).', 'warning')
+            return redirect(url_for('admin'))
 
-        if ok_local and ok_cloud:
-            flash('Administrador creado correctamente.', 'success')
-        elif ok_local and not ok_cloud:
-            flash('Administrador creado localmente (Firebase falló).', 'warning')
-        else:
-            flash('No se pudo crear el administrador.', 'danger')
-
+        flash('Administrador creado correctamente ✅', 'success')
         return redirect(url_for('admin'))
 
     return render_template('nuevo_admin.html')
-
-
 
 # -------- Recuperación y reseteo de contraseña (envío real) --------
 @app.route("/recuperar", methods=["GET", "POST"])
