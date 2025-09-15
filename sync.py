@@ -19,11 +19,14 @@ def sync_productos():
         pid = str(p["id"])
         doc_ref = db.collection("productos").document(pid)
         doc = doc_ref.get()
+
         if not doc.exists:
             doc_ref.set(p)
             print(f"⬆️ Producto subido a Firebase: {p['nombre']}")
         else:
-            print(f"✅ Ya existe en Firebase: {p['nombre']}")
+            # 🔹 Si ya existe, actualizamos con los cambios locales
+            doc_ref.update(p)
+            print(f"🔄 Producto actualizado en Firebase: {p['nombre']}")
 
 def sync_usuarios():
     if not db:
@@ -48,7 +51,8 @@ def sync_usuarios():
             doc_ref.set(u)
             print(f"⬆️ Usuario subido a Firebase: {u['correo']}")
         else:
-            print(f"✅ Ya existe en Firebase: {u['correo']}")
+            doc_ref.update(u)  # 🔹 Actualizar también usuarios
+            print(f"🔄 Usuario actualizado en Firebase: {u['correo']}")
 
 if __name__ == "__main__":
     print("🔄 Sincronizando productos...")
@@ -56,3 +60,5 @@ if __name__ == "__main__":
     print("🔄 Sincronizando usuarios...")
     sync_usuarios()
     print("🎉 Sincronización terminada.")
+
+

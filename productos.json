@@ -1,42 +1,57 @@
 [
   {
-    "nombre": "Prueba 1",
+    "id": "W8xY51gvAJB8ut3Qtane",
+    "nombre": "Exhibidor",
+    "descripcion": "Elegante exhibidor fabricado en vidrio claro de 6 mm, ideal para resaltar cada detalle de sus productos, con un diseño amplio y funcional, cuenta con 20 divisiones internas que brindan orden y visibilidad.",
+    "precio": 123.0,
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fexibidor.jpeg?alt=media&token=cb37c395-0644-48f8-b492-90708109346f",
     "archivo_ra": "borrador_6_casi.glb",
-    "descripcion": "vidrio de 6mmclaro     \r\n 60cm de frente\r\n40cm de fondo\r\n180cm de altura\r\n",
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
-    "precio": 123.0,
-    "id": "W8xY51gvAJB8ut3Qtane"
+    "frente": 150,
+    "fondo": 0.40,
+    "altura": 180
   },
   {
-    "nombre": "Gabyss",
     "id": "e7c7df32-8456-41f9-bcb0-65fcb2266f09",
-    "descripcion": "hola agbay",
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "nombre": "Vitrina vertical",
+    "descripcion": "Vitrina vertical elaborada en aluminio color negro, con vidrio perforado y soportes de acero inoxidable de alta resistencia. Su diseño estilizado y robusto garantiza estabilidad y durabilidad, ideal para exhibir productos de manera segura y moderna.",
     "precio": 123.0,
-    "archivo_ra": "vitrina3.glb"
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20de%20Vertical.jpeg?alt=media&token=6dbf359b-03d6-4776-941e-36116c7c4d77",
+    "archivo_ra": "vitrina3.glb",
+    "frente": 0.40,
+    "fondo": 0.35,
+    "altura": 180
   },
   {
-    "nombre": "Vitrina con Mixta",
     "id": "mdcxdtPoNhkt2Iuh9mc9",
-    "descripcion": " Vidrio de 6mm claro      \r\n60cm de frente\r\n 40cm de fondo \r\n180cm de altura ",
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "nombre": "Vitrina con Horizontal",
+    "descripcion": "Vitrina horizontal fabricada en aluminio color blanco, de diseño moderno y elegante. Equipada con vidrio claro de 6 mm que garantiza seguridad y visibilidad, ideal para la exhibición de productos delicados o de valor.",
     "precio": 100.0,
-    "archivo_ra": "vitrina3.glb"
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20%20con%20aluminio%20blanci.jpeg?alt=media&token=8961d85b-6702-44e5-a351-01a63eecc271",
+    "archivo_ra": "vitrina3.glb",
+    "frente": 100,
+    "fondo": 0.40,
+    "altura": 110
   },
   {
-    "nombre": "Caramelera",
     "id": "uuAtAz10hVr6enLtwgtH",
-    "descripcion": "vidrio de 6mmclaro \r\n60cm de frente\r\n 40cm de fondo\r\n 180cm de altura",
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
+    "nombre": "Caramelera",
+    "descripcion": "Caramelera en aluminio blanco con vidrio 4 mm en contorno y frente, vidrio 3 mm en separaciones y 40 divisiones internas. Perfecta para exhibición de dulces y pequeños productos.",
     "precio": 17.0,
-    "archivo_ra": "vitrina3.glb"
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FCaramelera.jpeg?alt=media&token=0a7f6afd-0985-43ba-a7f5-3708cb76e3bd",
+    "archivo_ra": "vitrina3.glb",
+    "frente": 0.97,
+    "fondo": 0.20,
+    "altura": 0.78
   },
   {
     "id": "262b4724-43fb-4eba-b637-0fa615c277a8",
     "nombre": "Puerta",
-    "descripcion": "aliminio blanco",
-    "precio": 180.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrinainternet.png?alt=media&token=d50639d1-0818-410b-b043-528afe286012",
-    "archivo_ra": "vitrina3_1.glb"
+    "descripcion": "Puerta batiente fabricada en aluminio tubular color negro con acabado elegante y resistente. Equipada con vidrio claro de 6 mm que aporta seguridad y visibilidad, además de una chapa de pomo y sistema de tarjeta que garantizan un acceso confiable y moderno.",
+    "precio": 225.0,
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FPuerta.jpeg?alt=media&token=0fed327b-d514-4b58-aa4c-4f482fae301c",
+    "archivo_ra": "vitrina3_1.glb",
+    "frente": 0.90,
+    "fondo": "",
+    "altura": 225
   }
 ]
