@@ -6,6 +6,7 @@ from firebase_admin import auth
 from email.mime.text import MIMEText
 from functools import wraps
 from flask import Flask, render_template, redirect, url_for, request, session, flash, abort
+from flask import jsonify
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
@@ -256,6 +257,16 @@ def ver_modelo(nombre_archivo):
     carrito_cant = len(session.get('carrito', []))  # Para mantener consistencia si hay navbar
     rol = session.get('rol', 'user')
     return render_template('visor_modelo.html', nombre_archivo=nombre_archivo, carrito_cant=carrito_cant, rol=rol)
+# -------- API para Flutter --------
+@app.route('/api/productos')
+def api_productos():
+    try:
+        productos = cargar_productos()
+        return jsonify(productos), 200
+    except Exception as e:
+        print(f"❌ Error en /api/productos: {e}")
+        return jsonify({"error": "No se pudieron obtener los productos"}), 500
+
 
 
 # -------- Auth --------
