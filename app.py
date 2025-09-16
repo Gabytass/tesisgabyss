@@ -4,6 +4,7 @@ import uuid
 import smtplib
 from firebase_admin import auth
 from email.mime.text import MIMEText
+from datetime import datetime
 from functools import wraps
 from flask import Flask, render_template, redirect, url_for, request, session, flash, abort
 from flask import jsonify
@@ -257,6 +258,95 @@ def ver_modelo(nombre_archivo):
     carrito_cant = len(session.get('carrito', []))  # Para mantener consistencia si hay navbar
     rol = session.get('rol', 'user')
     return render_template('visor_modelo.html', nombre_archivo=nombre_archivo, carrito_cant=carrito_cant, rol=rol)
+# -------- Calificaciones --------
+@app.route('/calificar/<id>', methods=['POST'])
+def calificar(id):
+    try:
+        rating = int(request.form.get("rating", 0))
+
+        if rating < 1 or rating > 5:
+            flash("La calificación debe ser entre 1 y 5 ⭐", "error")
+            return redirect(url_for("index"))
+
+        producto_ref = db.collection("productos").document(id)  # 👈 usa la colección correcta
+        producto = producto_ref.get()
+
+        if not producto.exists:
+            flash("Producto no encontrado", "error")
+            return redirect(url_for("index"))
+
+        producto_data = producto.to_dict()
+
+        calificaciones = producto_data.get("calificaciones", [])
+        calificaciones.append(rating)
+
+        promedio = sum(calificaciones) / len(calificaciones)
+
+        producto_ref.update({
+            "calificaciones": calificaciones,
+            "promedio": promedio
+        })
+
+        flash("⭐ ¡Gracias por tu calificación!", "success")
+        return redirect(url_for("index"))
+
+    except Exception as e:
+        flash(f"Error: {e}", "error")
+        return redirect(url_for("index"))
+    
+
+@app.route('/comentar/<id>', methods=['POST'])
+def comentar(id):
+    try:
+        # 👇 Verifica si hay sesión iniciada
+        if not session.get("usuario"):
+            flash("Debes iniciar sesión para comentar 💬", "warning")
+            return redirect(url_for("login"))
+
+        # 🔹 Recuperar el comentario del formulario
+        comentario = request.form.get("comentario", "").strip()
+        if not comentario:
+            flash("El comentario no puede estar vacío.", "error")
+            return redirect(url_for("index"))
+
+        usuario = session.get("usuario")
+
+        # 🔹 Busca el producto en Firebase
+        producto_ref = db.collection("productos").document(id)
+        producto = producto_ref.get()
+
+        if not producto.exists:
+            flash("Producto no encontrado", "error")
+            return redirect(url_for("index"))
+
+        producto_data = producto.to_dict()
+
+        # 🔹 Recupera los comentarios anteriores (si no hay, crea lista vacía)
+        comentarios = producto_data.get("comentarios", [])
+
+        # 🔹 Agrega un nuevo comentario con usuario y fecha
+        nuevo_comentario = {
+            "usuario": usuario,
+            "texto": comentario,
+            "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+
+        comentarios.append(nuevo_comentario)
+
+        # 🔹 Guarda en Firebase
+        producto_ref.update({
+            "comentarios": comentarios
+        })
+
+        flash("💬 ¡Gracias por tu comentario!", "success")
+        return redirect(url_for("index"))
+
+    except Exception as e:
+        flash(f"Error: {e}", "error")
+        return redirect(url_for("index"))
+
+
+
 # -------- API para Flutter --------
 @app.route('/api/productos')
 def api_productos():
