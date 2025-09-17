@@ -78,6 +78,32 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
+    <!-- BANNERS / CARRUSEL -->
+<div id="bannerCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{{ url_for('static', filename='banner1.jpg') }}" class="d-block w-100" alt="Banner 1"
+           style="height: 400px; object-fit: cover;">
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='banner2.jpg') }}" class="d-block w-100" alt="Banner 2"
+           style="height: 400px; object-fit: cover;">
+    </div>
+    <div class="carousel-item">
+      <img src="{{ url_for('static', filename='banner3.jpg') }}" class="d-block w-100" alt="Banner 3"
+           style="height: 400px; object-fit: cover;">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
+</div>
+
 
     <!-- Catálogo -->
     <h1 class="text-center mb-4" style="color: #0a0b0a; font-weight: 600; font-size: 1.8rem;">

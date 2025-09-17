@@ -2,17 +2,23 @@ import os
 import json
 import uuid
 import smtplib
-from firebase_admin import auth
 from email.mime.text import MIMEText
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, redirect, url_for, request, session, flash, abort
-from flask import jsonify
+
+from flask import Flask, render_template, redirect, url_for, request, session, flash, abort, jsonify
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from dotenv import load_dotenv
-load_dotenv()  # Carga variables de .env
+
+# 🔹 Cargar variables de entorno (.env en local, Config Vars en Heroku)
+load_dotenv()
+
+# 🔹 Firebase (config separado)
+from firebase_admin import auth
+from firebase_config import db, bucket
+
 
 
 # Verificamos si se están leyendo las variables de entorno
