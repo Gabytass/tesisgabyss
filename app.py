@@ -262,26 +262,34 @@ def ver_modelo(nombre_archivo):
 @app.route('/calificar/<id>', methods=['POST'])
 def calificar(id):
     try:
-        rating = int(request.form.get("rating", 0))
+        # ⚠️ Verificamos que Firebase esté disponible
+        if not db:
+            flash("⚠️ Base de datos no disponible. Inténtalo más tarde.", "warning")
+            return redirect(url_for("index"))
 
+        # 🔹 Recuperar la calificación enviada
+        rating = int(request.form.get("rating", 0))
         if rating < 1 or rating > 5:
             flash("La calificación debe ser entre 1 y 5 ⭐", "error")
             return redirect(url_for("index"))
 
-        producto_ref = db.collection("productos").document(id)  # 👈 usa la colección correcta
+        # 🔹 Buscar producto en Firebase
+        producto_ref = db.collection("productos").document(id)
         producto = producto_ref.get()
 
         if not producto.exists:
             flash("Producto no encontrado", "error")
             return redirect(url_for("index"))
 
-        producto_data = producto.to_dict()
+        producto_data = producto.to_dict() or {}
 
-        calificaciones = producto_data.get("calificaciones", [])
+        # 🔹 Recuperar calificaciones anteriores como lista
+        calificaciones = list(producto_data.get("calificaciones", []))
         calificaciones.append(rating)
 
         promedio = sum(calificaciones) / len(calificaciones)
 
+        # 🔹 Guardar en Firebase
         producto_ref.update({
             "calificaciones": calificaciones,
             "promedio": promedio
@@ -291,27 +299,33 @@ def calificar(id):
         return redirect(url_for("index"))
 
     except Exception as e:
-        flash(f"Error: {e}", "error")
+        flash(f"Error en calificación: {e}", "error")
         return redirect(url_for("index"))
-    
 
+
+# -------- Comentarios --------
 @app.route('/comentar/<id>', methods=['POST'])
 def comentar(id):
     try:
-        # 👇 Verifica si hay sesión iniciada
+        # ⚠️ Verificamos que haya sesión
         if not session.get("usuario"):
             flash("Debes iniciar sesión para comentar 💬", "warning")
             return redirect(url_for("login"))
 
+        # ⚠️ Verificamos que Firebase esté disponible
+        if not db:
+            flash("⚠️ Base de datos no disponible. Inténtalo más tarde.", "warning")
+            return redirect(url_for("index"))
+
         # 🔹 Recuperar el comentario del formulario
-        comentario = request.form.get("comentario", "").strip()
+        comentario = (request.form.get("comentario") or "").strip()
         if not comentario:
             flash("El comentario no puede estar vacío.", "error")
             return redirect(url_for("index"))
 
         usuario = session.get("usuario")
 
-        # 🔹 Busca el producto en Firebase
+        # 🔹 Buscar producto en Firebase
         producto_ref = db.collection("productos").document(id)
         producto = producto_ref.get()
 
@@ -319,21 +333,20 @@ def comentar(id):
             flash("Producto no encontrado", "error")
             return redirect(url_for("index"))
 
-        producto_data = producto.to_dict()
+        producto_data = producto.to_dict() or {}
 
-        # 🔹 Recupera los comentarios anteriores (si no hay, crea lista vacía)
-        comentarios = producto_data.get("comentarios", [])
+        # 🔹 Recuperar comentarios anteriores como lista
+        comentarios = list(producto_data.get("comentarios", []))
 
-        # 🔹 Agrega un nuevo comentario con usuario y fecha
+        # 🔹 Agregar nuevo comentario
         nuevo_comentario = {
             "usuario": usuario,
             "texto": comentario,
             "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
-
         comentarios.append(nuevo_comentario)
 
-        # 🔹 Guarda en Firebase
+        # 🔹 Guardar en Firebase
         producto_ref.update({
             "comentarios": comentarios
         })
@@ -342,7 +355,7 @@ def comentar(id):
         return redirect(url_for("index"))
 
     except Exception as e:
-        flash(f"Error: {e}", "error")
+        flash(f"Error en comentario: {e}", "error")
         return redirect(url_for("index"))
 
 

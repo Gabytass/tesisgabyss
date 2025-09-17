@@ -11,7 +11,7 @@ try:
     # ----------------------------
     # 🔹 PRODUCCIÓN (Heroku)
     # ----------------------------
-    firebase_key_json = os.environ.get("FIREBASE_KEY_JSON")
+    firebase_key_json = os.environ.get("FIREBASE_CONFIG")  # ✅ cambiado aquí
     storage_bucket = os.environ.get("FIREBASE_STORAGE_BUCKET")
 
     if firebase_key_json and storage_bucket:
@@ -32,7 +32,7 @@ try:
             bucket = storage.bucket()
             print("✅ Firebase inicializado en producción")
         except Exception as e:
-            print(f"❌ Error usando FIREBASE_KEY_JSON: {e}")
+            print(f"❌ Error usando FIREBASE_CONFIG: {e}")
 
     # ----------------------------
     # 🔹 DESARROLLO (local)
@@ -58,7 +58,9 @@ except Exception as e:
 # 🔹 FUNCIONES DE USO GENERAL
 # =====================================================
 
+# ----------------------------
 # PRODUCTOS
+# ----------------------------
 def agregar_producto(nombre, precio, imagen_local_path=None):
     """Agrega un producto a Firestore y opcionalmente sube la imagen a Storage"""
     if not db:
@@ -111,7 +113,9 @@ def eliminar_producto(producto_id):
         print(f"❌ Error eliminando producto: {e}")
 
 
+# ----------------------------
 # USUARIOS
+# ----------------------------
 def registrar_usuario(nombre, correo, clave, rol="user"):
     """Crea un usuario en Firebase Authentication y lo guarda en Firestore"""
     if not db:
@@ -164,6 +168,7 @@ def eliminar_usuario(uid):
         print(f"✅ Usuario {uid} eliminado")
     except Exception as e:
         print(f"❌ Error eliminando usuario: {e}")
+
 
 
 
