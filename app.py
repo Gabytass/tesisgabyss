@@ -113,7 +113,22 @@ def _normalize_product(p, idx):
         prod['precio'] = 0.0
     prod.setdefault('imagen', '')
     prod.setdefault('archivo_ra', '')
-    return prod
+
+     # ✅ NUEVO: medidas opcionales a float o None
+    def to_float_or_none(v):
+        if v in (None, '',):
+            return None
+        try:
+            return float(v)
+        except:
+            return None
+
+    prod['frente'] = to_float_or_none(prod.get('frente'))
+    prod['fondo']  = to_float_or_none(prod.get('fondo'))
+    prod['altura'] = to_float_or_none(prod.get('altura'))
+
+    
+    return prod 
 
 def _normalize_user(u):
     d = dict(u) if isinstance(u, dict) else {}
@@ -634,9 +649,27 @@ def nuevo_producto():
         imagen = request.form.get('imagen','').strip()
         archivo_ra = request.files.get('archivo_ra')
 
+         # ✅ NUEVO: capturar medidas (pueden venir vacías)
+        frente_raw = (request.form.get('frente') or '').strip()
+        fondo_raw  = (request.form.get('fondo')  or '').strip()
+        altura_raw = (request.form.get('altura') or '').strip()
+
         if not (nombre and descripcion and precio and imagen):
             flash('Faltan datos del formulario.', 'warning')
             return redirect(url_for('nuevo_producto'))
+        
+        # ✅ NUEVO: convertir a float o None
+        def to_float_or_none(s):
+            if s in (None, '',):
+                return None
+            try:
+                return float(s)
+            except:
+                return None
+
+        frente = to_float_or_none(frente_raw)
+        fondo  = to_float_or_none(fondo_raw)
+        altura = to_float_or_none(altura_raw)
 
         try:
             precio = float(precio)
