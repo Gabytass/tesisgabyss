@@ -52,8 +52,9 @@
 
   <model-viewer
     src="{{ url_for('static', filename='modelos_ra/' ~ nombre_archivo) }}"
-
     alt="Modelo 3D"
+    autoplay
+    animation-name="Action"
     auto-rotate
     camera-controls
     ar
@@ -63,5 +64,6 @@
   <a href="{{ url_for('index') }}">← Volver al catálogo</a>
 </body>
 </html>
+
 
 

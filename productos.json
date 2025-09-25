@@ -1,25 +1,130 @@
 [
   {
-    "id": "W8xY51gvAJB8ut3Qtane",
-    "nombre": "Exhibidor",
-    "descripcion": "Elegante exhibidor fabricado en vidrio claro de 6 mm, ideal para resaltar cada detalle de sus productos, con un diseño amplio y funcional, cuenta con 20 divisiones internas que brindan orden y visibilidad.",
-    "precio": 123.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fexibidor.jpeg?alt=media&token=cb37c395-0644-48f8-b492-90708109346f",
-    "archivo_ra": "estanteria6.glb",
-    "frente": 150,
-    "fondo": 0.40,
-    "altura": 180
+    "nombre": "Zapatera con Espejo",
+    "descripcion": "Diseño funcional: Perfecto para mantener el orden y aprovechar cada rincón.\r\n\r\nPuerta con espejo: Aporta elegancia y utilidad, ideal para revisar tu look antes de salir.\r\n\r\nMaterial resistente: Fabricado en melamina blanca de alta calidad con repisas de vidrio.",
+    "fondo": 30.0,
+    "frente": 60.0,
+    "precio": 150.0,
+    "altura": 159.99,
+    "id": "0189b98f-5ba8-4fad-9470-bafb3f2268bb",
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fzapatera.jpeg?alt=media&token=71a0df3f-de32-4556-9540-d583a1641b9a",
+    "archivo_ra": "zapatera5fin.glb"
   },
   {
-    "id": "e7c7df32-8456-41f9-bcb0-65fcb2266f09",
-    "nombre": "Vitrina vertical",
-    "descripcion": "Vitrina vertical elaborada en aluminio color negro, con vidrio perforado y soportes de acero inoxidable de alta resistencia. Su diseño estilizado y robusto garantiza estabilidad y durabilidad, ideal para exhibir productos de manera segura y moderna.",
+    "nombre": "Pecera",
+    "archivo_ra": "pecerallistaverdecita5.glb",
+    "fondo": 40.0,
+    "frente": 65.0,
+    "precio": 25.0,
+    "id": "1d5b0184-85ca-4ab5-86fe-e0cdd48f083d",
+    "promedio": 4.0,
+    "altura": 40.0,
+    "comentarios": [
+      {
+        "texto": "Resistencia y calidad",
+        "usuario": "Gabriel",
+        "fecha": "2025-09-23 01:13:25"
+      }
+    ],
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fpecera.png?alt=media&token=323461fc-6b25-4630-a437-64a7fbe1b146",
+    "calificaciones": [
+      5,
+      3
+    ],
+    "descripcion": "Vidrio de 6mm"
+  },
+  {
+    "nombre": "Puerta",
+    "archivo_ra": "puerta_lista3.glb",
+    "fondo": 0.07,
+    "frente": 0.9,
+    "precio": 225.0,
+    "id": "262b4724-43fb-4eba-b637-0fa615c277a8",
+    "promedio": 4.0,
+    "altura": 225.0,
+    "comentarios": [
+      {
+        "texto": "Gracias excelente servicio",
+        "usuario": "Anónimo",
+        "fecha": "2025-09-16 12:16:06"
+      },
+      {
+        "texto": "Muy buen trabajo",
+        "usuario": "Ernesto",
+        "fecha": "2025-09-16 12:25:17"
+      },
+      {
+        "texto": "Recomendado excelente servicio",
+        "usuario": "cuy",
+        "fecha": "2025-09-18 18:18:58"
+      }
+    ],
+    "calificaciones": [
+      1,
+      5,
+      5,
+      5
+    ],
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fpuerta.jpeg?alt=media&token=de203cb4-1d78-4faa-9cae-0d61f32c73da",
+    "descripcion": "Puerta batiente fabricada en aluminio tubular color negro con acabado elegante y resistente. Equipada con vidrio claro de 6 mm que aporta seguridad y visibilidad, además de una chapa de pomo  que garantizan un acceso confiable y moderno."
+  },
+  {
+    "nombre": "Mesa de Manicura",
+    "descripcion": "Material principal: Melamina blanca de alta calidad, fácil de limpiar y mantener.\r\n\r\nSoportes: Acero inoxidable, que garantizan firmeza y durabilidad.\r\n\r\nCubierta: Vidrio claro de 6 mm, que aporta un acabado moderno y sofisticado.",
+    "fondo": 45.0,
+    "frente": 105.0,
+    "precio": 90.0,
+    "altura": 80.0,
+    "id": "3d7fa911-cae7-4e58-8948-18c77f7a0402",
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20aluminio%20negro.jpeg?alt=media&token=9a87d24d-c0e5-413f-83f8-9c2d3a1bd483",
+    "archivo_ra": "Mesa_de_manicura2.glb"
+  },
+  {
+    "nombre": "Exhibidor",
+    "archivo_ra": "exhibidoral6.glb",
+    "fondo": 0.4,
+    "frente": 150.0,
     "precio": 123.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20de%20Vertical.jpeg?alt=media&token=6dbf359b-03d6-4776-941e-36116c7c4d77",
-    "archivo_ra": "vitrina3.glb",
-    "frente": 0.40,
-    "fondo": 0.35,
-    "altura": 180
+    "id": "W8xY51gvAJB8ut3Qtane",
+    "promedio": 3.3333333333333335,
+    "altura": 180.0,
+    "comentarios": [
+      {
+        "texto": "Me encanta los acabados",
+        "usuario": "Tavo",
+        "fecha": "2025-09-16 22:16:49"
+      },
+      {
+        "texto": "Gracias excelente servicio",
+        "usuario": "Ernesto",
+        "fecha": "2025-09-17 14:04:58"
+      }
+    ],
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fexibidor.jpeg?alt=media&token=cb37c395-0644-48f8-b492-90708109346f",
+    "calificaciones": [
+      3,
+      5,
+      2
+    ],
+    "descripcion": "Elegante exhibidor fabricado en vidrio claro de 6 mm, ideal para resaltar cada detalle de sus productos, con un diseño amplio y funcional, cuenta con 20 divisiones internas que brindan orden y visibilidad."
+  },
+  {
+    "nombre": "Caramelera",
+    "descripcion": "Caramelera en aluminio blanco con vidrio 4 mm en contorno y frente, vidrio 3 mm en separaciones y 40 divisiones internas. Perfecta para exhibición de dulces y pequeños productos.",
+    "fondo": 0.2,
+    "frente": 0.97,
+    "precio": 17.0,
+    "id": "uuAtAz10hVr6enLtwgtH",
+    "promedio": 4.0,
+    "altura": 0.78,
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FCaramelera.jpeg?alt=media&token=0a7f6afd-0985-43ba-a7f5-3708cb76e3bd",
+    "calificaciones": [
+      2,
+      4,
+      5,
+      5
+    ],
+    "archivo_ra": "vitrina3.glb"
   },
   {
     "id": "mdcxdtPoNhkt2Iuh9mc9",
@@ -28,30 +133,8 @@
     "precio": 100.0,
     "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20%20con%20aluminio%20blanci.jpeg?alt=media&token=8961d85b-6702-44e5-a351-01a63eecc271",
     "archivo_ra": "vitrina3.glb",
-    "frente": 100,
-    "fondo": 0.40,
-    "altura": 110
-  },
-  {
-    "id": "uuAtAz10hVr6enLtwgtH",
-    "nombre": "Caramelera",
-    "descripcion": "Caramelera en aluminio blanco con vidrio 4 mm en contorno y frente, vidrio 3 mm en separaciones y 40 divisiones internas. Perfecta para exhibición de dulces y pequeños productos.",
-    "precio": 17.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FCaramelera.jpeg?alt=media&token=0a7f6afd-0985-43ba-a7f5-3708cb76e3bd",
-    "archivo_ra": "vitrina3.glb",
-    "frente": 0.97,
-    "fondo": 0.20,
-    "altura": 0.78
-  },
-  {
-    "id": "262b4724-43fb-4eba-b637-0fa615c277a8",
-    "nombre": "Puerta",
-    "descripcion": "Puerta batiente fabricada en aluminio tubular color negro con acabado elegante y resistente. Equipada con vidrio claro de 6 mm que aporta seguridad y visibilidad, además de una chapa de pomo y sistema de tarjeta que garantizan un acceso confiable y moderno.",
-    "precio": 225.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FPuerta.jpeg?alt=media&token=0fed327b-d514-4b58-aa4c-4f482fae301c",
-    "archivo_ra": "vitrina3_1.glb",
-    "frente": 0.90,
-    "fondo": "",
-    "altura": 225
+    "frente": 100.0,
+    "fondo": 0.4,
+    "altura": 110.0
   }
 ]
