@@ -48,27 +48,16 @@
       {% endif %}
 
       <!-- 🔘 Botones de acción -->
-      <div class="d-grid gap-2 mt-4">
-        <a href="{{ url_for('agregar_al_carrito', id_producto=producto['id']) }}" class="btn btn-green">
-          🛒 Agregar al carrito
-        </a>
-        {% if producto.get('archivo_ra') %}
-          <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn btn-black">
-            👓 Ver en 3D
-          </a>
-        {% endif %}
-        <a href="{{ url_for('index') }}" class="btn btn-outline-dark">
-          ← Volver al catálogo
-        </a>
-      </div>
-    </div>
-  </div>
+<div class="d-grid gap-2 mt-4">
+  <a href="{{ url_for('agregar_al_carrito', id_producto=producto['id']) }}" class="btn btn-success">
+    🛒 Agregar al carrito
+  </a>
+  {% if producto.get('archivo_ra') %}
+    <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn btn-dark">
+      👓 Ver en 3D
+    </a>
+  {% endif %}
+  <a href="{{ url_for('index') }}" class="btn btn-outline-dark">
+    ← Volver al catálogo
+  </a>
 </div>
-
-<style>
-  .btn-green { background: green; color: white; border-radius: 6px; }
-  .btn-green:hover { filter: brightness(.9); color: #fff; }
-  .btn-black { background: black; color: white; border-radius: 6px; }
-  .btn-black:hover { filter: brightness(1.15); color: #fff; }
-</style>
-{% endblock %}

@@ -1,49 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Contáctanos - Disfaluvid{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-  <div class="text-center mb-4">
-    <h1 class="fw-bold" style="color:rgb(5, 250, 5);">Contáctanos</h1>
-    <hr class="w-25 mx-auto" style="border: 2px solid black;">
-    <p class="fs-5 text-muted">Estamos listos para atenderte y responder todas tus inquietudes.</p>
-  </div>
+<div class="container mt-5">
+  <h2 class="text-center text-success">Contáctanos</h2>
+  <p class="text-center">Estamos listos para atenderte y responder todas tus inquietudes.</p>
 
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-      <div class="p-4 bg-white shadow rounded border-start border-4" style="border-color:green;">
-        
-        <!-- Teléfonos -->
-        <h5 class="fw-bold text-dark">📞 Teléfonos de contacto</h5>
-        <ul class="list-unstyled mb-4">
-          <li><a href="tel:+593999102675" class="text-decoration-none" style="color:green;"><strong>0999102675</strong></a></li>
-          <li><a href="tel:+593997229860" class="text-decoration-none" style="color:green;"><strong>0997229860</strong></a></li>
-        </ul>
+  <div class="card p-3 shadow-sm mx-auto" style="max-width: 500px;">
+    <h5>📞 Teléfonos de contacto</h5>
+    <p class="text-success mb-1">0999102675</p>
+    <p class="text-success">0997229860</p>
 
-        <!-- Correo -->
-        <h5 class="fw-bold text-dark">📧 Correo electrónico</h5>
-        <p><a href="mailto:christiancm3@hotmail.com" class="text-decoration-none" style="color:green;">christiancm3@hotmail.com</a></p>
+    <h5>📧 Correo electrónico</h5>
+    <p><a href="mailto:christiancm3@hotmail.com" class="text-decoration-none">christiancm3@hotmail.com</a></p>
 
-        <!-- Dirección -->
-        <h5 class="fw-bold text-dark">📍 Dirección</h5>
-        <p class="mb-4">Juana Atabalipa 4-49 y Teodoro Gómez de la Torre, Ibarra - Ecuador</p>
+    <h5>📍 Dirección</h5>
+    <p>Juana Atabalipa 4-49 y Teodoro Gómez de la Torre, Ibarra – Ecuador</p>
 
-        <!-- Mapa -->
-        <div class="ratio ratio-16x9 mb-3">
-          <iframe 
-            src="https://www.google.com/maps?q=Juana+Atabalipa+4-49+Ibarra+Ecuador&output=embed" 
-            style="border:0;" allowfullscreen loading="lazy">
-          </iframe>
-        </div>
-
-        <!-- Botón acción -->
-        <div class="text-center">
-          <a href="{{ url_for('escribenos') }}" class="btn text-white px-4 py-2" 
-             style="background-color:green; border-radius:8px;">
-            ✉ Escríbenos
-          </a>
-        </div>
-      </div>
-    </div>
+    <!-- Botón de WhatsApp -->
+    <a href="https://wa.me/593999102675" target="_blank" class="btn btn-success mt-3 w-auto">
+      ✉ Escríbenos
+    </a>
   </div>
 </div>
 {% endblock %}

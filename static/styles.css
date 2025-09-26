@@ -26,17 +26,4 @@ body {
   background-color: #2d3436;
   color: rgb(13, 13, 13);
 }
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-  transition: all 0.3s ease-in-out;
-}
-.card-text {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;  /* máximo 3 líneas */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-
 
