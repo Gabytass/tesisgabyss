@@ -48,16 +48,20 @@
       {% endif %}
 
       <!-- 🔘 Botones de acción -->
-<div class="d-grid gap-2 mt-4">
-  <a href="{{ url_for('agregar_al_carrito', id_producto=producto['id']) }}" class="btn btn-success">
-    🛒 Agregar al carrito
-  </a>
-  {% if producto.get('archivo_ra') %}
-    <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn btn-dark">
-      👓 Ver en 3D
-    </a>
-  {% endif %}
-  <a href="{{ url_for('index') }}" class="btn btn-outline-dark">
-    ← Volver al catálogo
-  </a>
+      <div class="d-grid gap-2 mt-4">
+        <a href="{{ url_for('agregar_al_carrito', id_producto=producto['id']) }}" class="btn btn-success">
+          🛒 Agregar al carrito
+        </a>
+        {% if producto.get('archivo_ra') %}
+          <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn btn-dark">
+            👓 Ver en 3D
+          </a>
+        {% endif %}
+        <a href="{{ url_for('index') }}" class="btn btn-outline-dark">
+          ← Volver al catálogo
+        </a>
+      </div>
+    </div>
+  </div>
 </div>
+{% endblock %}
