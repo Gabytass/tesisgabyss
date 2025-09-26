@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ producto['nombre'] }} - Disfaluvid{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="row align-items-center">
+    
+    <!-- 📸 Imagen del producto -->
+    <div class="col-md-6 mb-4 mb-md-0">
+      <img src="{{ producto['imagen'] if producto['imagen'] and producto['imagen'].startswith('http') 
+                   else url_for('static', filename=producto['imagen'] if producto['imagen'] else 'logo_empresa.png') }}" 
+           class="img-fluid rounded shadow" 
+           alt="{{ producto['nombre'] }}">
+    </div>
+
+    <!-- ℹ️ Información del producto -->
+    <div class="col-md-6">
+      <h1 class="fw-bold" style="color:rgb(5, 250, 5);">{{ producto['nombre'] }}</h1>
+      <p class="fs-5 text-dark">{{ producto['descripcion'] }}</p>
+
+      <!-- 📏 Medidas -->
+      {% if producto.get('frente') or producto.get('fondo') or producto.get('altura') %}
+      <h5 class="mt-3" style="color:black;">Medidas:</h5>
+      <ul class="list-unstyled">
+        {% if producto.get('frente') %}
+          <li><strong>Frente:</strong> {{ producto['frente'] }} cm</li>
+        {% endif %}
+        {% if producto.get('fondo') %}
+          <li><strong>Fondo:</strong> {{ producto['fondo'] }} cm</li>
+        {% endif %}
+        {% if producto.get('altura') %}
+          <li><strong>Altura:</strong> {{ producto['altura'] }} cm</li>
+        {% endif %}
+      </ul>
+      {% endif %}
+
+      <!-- 💲 Precio -->
+      <p class="fs-4 mt-3">
+        <strong>Precio:</strong> 
+        <span style="color:green;">${{ '%.2f'|format(producto.get('precio',0)) }}</span>
+      </p>
+
+      <!-- ⭐ Calificación -->
+      {% if producto.get('promedio') %}
+        <p><strong>Calificación promedio:</strong> {{ '%.1f'|format(producto['promedio']) }} ⭐</p>
+      {% else %}
+        <p><em>Sin calificaciones aún</em></p>
+      {% endif %}
+
+      <!-- 🔘 Botones de acción -->
+      <div class="d-grid gap-2 mt-4">
+        <a href="{{ url_for('agregar_al_carrito', id_producto=producto['id']) }}" class="btn btn-green">
+          🛒 Agregar al carrito
+        </a>
+        {% if producto.get('archivo_ra') %}
+          <a href="{{ url_for('ver_modelo', nombre_archivo=producto['archivo_ra']) }}" class="btn btn-black">
+            👓 Ver en 3D
+          </a>
+        {% endif %}
+        <a href="{{ url_for('index') }}" class="btn btn-outline-dark">
+          ← Volver al catálogo
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .btn-green { background: green; color: white; border-radius: 6px; }
+  .btn-green:hover { filter: brightness(.9); color: #fff; }
+  .btn-black { background: black; color: white; border-radius: 6px; }
+  .btn-black:hover { filter: brightness(1.15); color: #fff; }
+</style>
+{% endblock %}

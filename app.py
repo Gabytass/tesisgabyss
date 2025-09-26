@@ -273,6 +273,44 @@ def ver_modelo(nombre_archivo):
     carrito_cant = len(session.get('carrito', []))  # Para mantener consistencia si hay navbar
     rol = session.get('rol', 'user')
     return render_template('visor_modelo.html', nombre_archivo=nombre_archivo, carrito_cant=carrito_cant, rol=rol)
+
+# -------- Páginas informativas --------
+@app.route("/conocenos")
+def conocenos():
+    return render_template("conocenos.html")
+
+@app.route("/sobre-nosotros")
+def sobre_nosotros():
+    return render_template("sobre_nosotros.html")
+
+@app.route("/contactanos")
+def contactanos():
+    return render_template("contactanos.html")
+@app.route("/escribenos", methods=["GET", "POST"])
+def escribenos():
+    if request.method == "POST":
+        nombre = request.form.get("nombre")
+        correo = request.form.get("correo")
+        mensaje = request.form.get("mensaje")
+
+        # Aquí puedes enviar un correo o guardar en Firebase
+        print(f"📩 Nuevo mensaje de {nombre} ({correo}): {mensaje}")
+
+        flash("✅ Tu mensaje ha sido enviado correctamente. ¡Gracias por contactarnos!", "success")
+        return redirect(url_for("escribenos"))
+
+    return render_template("escribenos.html")
+# ✅ Nueva ruta Detalles de producto
+@app.route('/producto/<id_producto>')
+def detalle_producto(id_producto):
+    productos = cargar_productos()
+    producto = next((p for p in productos if str(p.get('id')) == str(id_producto)), None)
+    if not producto:
+        flash("Producto no encontrado", "danger")
+        return redirect(url_for('index'))
+    return render_template("detalle_producto.html", producto=producto)
+
+
 # -------- Calificaciones --------
 @app.route('/calificar/<id>', methods=['POST'])
 def calificar(id):
@@ -630,6 +668,7 @@ def finalizar_compra():
     session['carrito'] = []  # Vaciar carrito al finalizar
     flash('Compra finalizada correctamente. Gracias por tu compra!', 'success')
     return redirect(url_for('index'))
+
 
 # -------- Admin --------
 @app.route('/admin')

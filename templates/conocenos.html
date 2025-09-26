@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Conócenos - Disfaluvid{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="text-center mb-4">
+    <h1 class="fw-bold" style="color:#0ef60e;">Conócenos</h1>
+    <hr class="w-25 mx-auto" style="border: 2px solid black;">
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- 🎨 Tarjeta bicolor -->
+      <div class="p-4 bg-white shadow rounded" style="border: 2px solid black;">
+        <p class="fs-5 text-dark">
+          Somos <strong style="color:green;">Disfaluvid</strong>, una empresa con 
+          <span class="fw-bold" style="color:green;">17 años de trayectoria en el mercado</span>, 
+          especializada en el diseño y fabricación de productos en aluminio y vidrio.
+        </p>
+        <p class="fs-5 text-dark">
+          A lo largo de nuestra historia, hemos consolidado una reputación basada en la 
+          <strong style="color:green;">calidad</strong>, la 
+          <strong style="color:green;">confianza</strong> y la 
+          <strong style="color:green;">satisfacción de nuestros clientes</strong>.
+        </p>
+        <p class="fs-5 text-dark">
+          Nuestro equipo está comprometido con la <em style="color:green;">innovación</em> 
+          y el <em style="color:green;">servicio personalizado</em>, ofreciendo soluciones 
+          que se adaptan a las necesidades de cada proyecto.
+        </p>
+
+        <!-- Botón de acción -->
+        <div class="text-center mt-4">
+          <a href="{{ url_for('escribenos') }}" class="btn text-white px-4 py-2" 
+             style="background-color:green; border-radius:8px;">
+            ✉ Escríbenos
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

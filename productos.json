@@ -12,7 +12,7 @@
   },
   {
     "nombre": "Pecera",
-    "archivo_ra": "pecerallistaverdecita5.glb",
+    "descripcion": "Vidrio de 6mm claro",
     "fondo": 40.0,
     "frente": 65.0,
     "precio": 25.0,
@@ -31,7 +31,7 @@
       5,
       3
     ],
-    "descripcion": "Vidrio de 6mm"
+    "archivo_ra": "pecerallistaverdecita5.glb"
   },
   {
     "nombre": "Puerta",
@@ -70,14 +70,14 @@
   },
   {
     "nombre": "Mesa de Manicura",
-    "descripcion": "Material principal: Melamina blanca de alta calidad, fácil de limpiar y mantener.\r\n\r\nSoportes: Acero inoxidable, que garantizan firmeza y durabilidad.\r\n\r\nCubierta: Vidrio claro de 6 mm, que aporta un acabado moderno y sofisticado.",
+    "archivo_ra": "mesa_de_manicura2.glb",
     "fondo": 45.0,
     "frente": 105.0,
     "precio": 90.0,
     "altura": 80.0,
     "id": "3d7fa911-cae7-4e58-8948-18c77f7a0402",
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20aluminio%20negro.jpeg?alt=media&token=9a87d24d-c0e5-413f-83f8-9c2d3a1bd483",
-    "archivo_ra": "Mesa_de_manicura2.glb"
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fcaramelera.jpeg?alt=media&token=2c570061-dda7-4d16-8dd4-cb405434b6e7",
+    "descripcion": "Material principal: Melamina blanca de alta calidad, fácil de limpiar y mantener.\r\n\r\nSoportes: Acero inoxidable, que garantizan firmeza y durabilidad.\r\n\r\nCubierta: Vidrio claro de 6 mm, que aporta un acabado moderno y sofisticado."
   },
   {
     "nombre": "Exhibidor",
@@ -109,32 +109,25 @@
     "descripcion": "Elegante exhibidor fabricado en vidrio claro de 6 mm, ideal para resaltar cada detalle de sus productos, con un diseño amplio y funcional, cuenta con 20 divisiones internas que brindan orden y visibilidad."
   },
   {
-    "nombre": "Caramelera",
-    "descripcion": "Caramelera en aluminio blanco con vidrio 4 mm en contorno y frente, vidrio 3 mm en separaciones y 40 divisiones internas. Perfecta para exhibición de dulces y pequeños productos.",
-    "fondo": 0.2,
-    "frente": 0.97,
-    "precio": 17.0,
-    "id": "uuAtAz10hVr6enLtwgtH",
-    "promedio": 4.0,
-    "altura": 0.78,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FCaramelera.jpeg?alt=media&token=0a7f6afd-0985-43ba-a7f5-3708cb76e3bd",
+    "nombre": "Vitrina vertical",
+    "archivo_ra": "peque3.glb",
+    "fondo": 0.35,
+    "frente": 0.4,
+    "precio": 123.0,
+    "altura": 180.0,
+    "promedio": 5.0,
+    "id": "e7c7df32-8456-41f9-bcb0-65fcb2266f09",
+    "comentarios": [
+      {
+        "texto": "Me encanta los acabados",
+        "usuario": "Gabriel",
+        "fecha": "2025-09-17 01:10:52"
+      }
+    ],
     "calificaciones": [
-      2,
-      4,
-      5,
       5
     ],
-    "archivo_ra": "vitrina3.glb"
-  },
-  {
-    "id": "mdcxdtPoNhkt2Iuh9mc9",
-    "nombre": "Vitrina con Horizontal",
-    "descripcion": "Vitrina horizontal fabricada en aluminio color blanco, de diseño moderno y elegante. Equipada con vidrio claro de 6 mm que garantiza seguridad y visibilidad, ideal para la exhibición de productos delicados o de valor.",
-    "precio": 100.0,
-    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2FVitrina%20%20con%20aluminio%20blanci.jpeg?alt=media&token=8961d85b-6702-44e5-a351-01a63eecc271",
-    "archivo_ra": "vitrina3.glb",
-    "frente": 100.0,
-    "fondo": 0.4,
-    "altura": 110.0
+    "imagen": "https://firebasestorage.googleapis.com/v0/b/rojasgabriela-bffec.firebasestorage.app/o/img%2Fvitrina%20de%20vertical.jpeg?alt=media&token=8ddc4b2e-bc00-472c-a673-b791a8194de2",
+    "descripcion": "Vitrina vertical elaborada en aluminio color negro, con vidrio perforado y soportes de acero inoxidable de alta resistencia. Su diseño estilizado y robusto garantiza estabilidad y durabilidad, ideal para exhibir productos de manera segura y moderna."
   }
 ]

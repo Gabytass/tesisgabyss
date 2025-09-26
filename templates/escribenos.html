@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Escríbenos - Disfaluvid{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="text-center mb-4">
+    <h1 class="fw-bold" style="color:rgb(5, 250, 5);">Escríbenos</h1>
+    <hr class="w-25 mx-auto" style="border: 2px solid green;">
+    <p class="fs-5">¿Tienes dudas o necesitas una cotización? Escríbenos y te responderemos lo más pronto posible.</p>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="p-4 bg-white shadow rounded">
+        <form method="post" action="{{ url_for('escribenos') }}">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre</label>
+            <input type="text" name="nombre" class="form-control" placeholder="Tu nombre completo" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Correo</label>
+            <input type="email" name="correo" class="form-control" placeholder="tu@email.com" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Mensaje</label>
+            <textarea name="mensaje" class="form-control" rows="5" placeholder="Escribe tu mensaje aquí..." required></textarea>
+          </div>
+          <button type="submit" class="btn text-white" style="background-color:green;">Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
